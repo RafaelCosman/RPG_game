@@ -1,17 +1,21 @@
 class Bullet
 {
   PVector shootLoc, loc1, loc2;
-  int bSize, surviveTime, damage;
+  int bSize, surviveTimeCurrent, surviveTimeDeadline, damage, range;
+  float speed;
   boolean madeByPlayer, madeByEnemyA, madeByEnemyC, madeByEnemyD;
 
-  Bullet(PVector shootLoc, PVector loc1, PVector loc2, int bSize, int surviveTime, int damage, boolean madeByPlayer, boolean madeByEnemyA, boolean madeByEnemyC, boolean madeByEnemyD)
+  Bullet(PVector shootLoc, PVector loc1, PVector loc2, int bSize, int surviveTimeCurrent, int surviveTimeDeadline, int damage, int range, float speed, boolean madeByPlayer, boolean madeByEnemyA, boolean madeByEnemyC, boolean madeByEnemyD)
   {
     this.shootLoc = shootLoc;
     this.loc1 = loc1;
     this.loc2 = loc2;
     this.bSize = bSize;
-    this.surviveTime = surviveTime;
+    this.surviveTimeCurrent = surviveTimeCurrent;
+    this.surviveTimeDeadline = surviveTimeDeadline;
     this.damage = damage;
+    this.range = range;
+    this.speed = speed;
     this.madeByPlayer = madeByPlayer;
     this.madeByEnemyA = madeByEnemyA;
     this.madeByEnemyC = madeByEnemyC;
@@ -44,8 +48,6 @@ class Bullet
     }
     else if (madeByEnemyC || madeByEnemyD)
     {
-      if (dist(p.loc2.x, p.loc2.y, loc2.x, loc2.y) <= p.pSize / 2 + bSize / 2)
-        restart = true;
       loc1.limit(3.5);
       loc2.add(loc1);
       fill(0, 255, 255);
@@ -53,4 +55,3 @@ class Bullet
     ellipse(loc2.x, loc2.y, bSize, bSize);
   }
 }
-
