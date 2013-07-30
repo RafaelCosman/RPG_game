@@ -4,6 +4,7 @@ ArrayList enemiesA;
 ArrayList enemiesC;
 ArrayList enemiesD;
 ArrayList bullets;
+ArrayList allBullets;
 PImage steelShortswordReal;
 PImage steelShortswordMask;
 PImage steelShortswordReal2;
@@ -62,7 +63,8 @@ void restart()
   enemiesC = new ArrayList();
   enemiesD = new ArrayList();
   bullets = new ArrayList();
-  p = new Player(new PVector(width / 2, height / 2), new PVector(width / 2, height / 2), 15, millis() - pauseTime, 10, 10, 0, 1);
+  allBullets = new ArrayList();
+  p = new Player(new PVector(width / 2, height / 2), new PVector(width / 2, height / 2), 15, millis() - pauseTime, 10000000, 10, 0, 1);
   x3 = 100;
   y3 = 100;
   px3 = 100;
@@ -209,30 +211,43 @@ void draw()
       if (weapon == 1 && millis() - p.shootTime - pauseTime >= 250)
       {
         p.shootTime = millis() - pauseTime;
-        bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), 5, -1, 6, true, false, false, false));
+        bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), 5, -1, -1, 6, 250, 3.5, true, false, false, false));
       }
       if (weapon == 2 && millis() - p.shootTime - pauseTime >= 150)
       {
         p.shootTime = millis() - pauseTime;
-        bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), 5, -1, 4, true, false, false, false));
+        bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), 5, -1, -1, 4, 225, 3.5, true, false, false, false));
       }
     }
-    for (int i = 0; i <= bullets.size() - 1; i ++)
+    allBullets = bullets;
+    for (int i = 0; i <= allBullets.size() - 1; i ++)
     {
       Bullet b = (Bullet) bullets.get(i);
       b.show();
       bulletExists = true;
-      hitReaction(enemiesA, i);
-      if (bulletExists)
-        hitReaction(enemiesC, i);
-      if (bulletExists)
-        hitReaction(enemiesD, i);
+      if (b.madeByPlayer)
+      {
+        bulletBehavior(enemiesA, i);
+        if (bulletExists)
+          bulletBehavior(enemiesC, i);
+        if (bulletExists)
+          bulletBehavior(enemiesD, i);
+      }
+      else if (bulletExists && dist(p.loc2.x, p.loc2.y, b.loc2.x, b.loc2.y) <= p.pSize / 2 + b.bSize / 2)
+      {
+        bullets.remove(i);
+        bulletExists = false;
+        p.HP -= b.damage;
+        if (p.HP <= 0)
+          restart = true;
+      }
+      if (bulletExists && ((dist(b.loc2.x, b.loc2.y, b.shootLoc.x, b.shootLoc.y) >= b.range && b.range != -1) || (millis() - b.surviveTimeCurrent - pauseTime >= b.surviveTimeDeadline && b.surviveTimeDeadline != -1)))
+        allBullets.remove(i);
     }
   }
   x3 = px3;
   y3 = py3;
 }
-
 
 void keyPressed()
 {
@@ -282,7 +297,7 @@ void keyReleased()
     keys[3] = false;
 }
 
-void hitReaction(ArrayList enemyList, int i)
+void bulletBehavior(ArrayList enemyList, int i)
 {
   for (int i2 = 0; i2 <= enemyList.size() - 1; i2 ++)
   {
@@ -295,8 +310,8 @@ void hitReaction(ArrayList enemyList, int i)
         if (weapon == 1)
         {
           bullets.remove(i);
-          e.HP -= b.damage;
           bulletExists = false;
+          e.HP -= b.damage;
         }
         else if (weapon == 2)
         {
@@ -304,10 +319,6 @@ void hitReaction(ArrayList enemyList, int i)
         }
       }
       e.hitBy[i] = true;
-    }
-    else
-    {
-      e.hitBy[i] = false;
     }
     if (e.HP <= 0)
     {
@@ -319,4 +330,3 @@ void hitReaction(ArrayList enemyList, int i)
     }
   }
 }
-
