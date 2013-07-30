@@ -29,8 +29,7 @@ class EnemyA extends Enemy
     if (millis() - shootTime - pauseTime >= 500 && !pause)
     {
       shootTime = millis() - pauseTime;
-      bullets.add(new Bullet(new PVector(loc2.x, loc2.y), new PVector(0, 0), new PVector(loc2.x, loc2.y), 5, millis() - pauseTime, 4, false, true, false, false));
+      bullets.add(new Bullet(new PVector(loc2.x, loc2.y), new PVector(0, 0), new PVector(loc2.x, loc2.y), 5, millis() - pauseTime, 5000, 4, -1, 4, false, true, false, false));
     }
   }
 }
-
