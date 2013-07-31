@@ -3,9 +3,9 @@ class Bullet
   PVector shootLoc, loc1, loc2;
   int bSize, surviveTimeCurrent, surviveTimeDeadline, damage, range;
   float speed;
-  boolean madeByPlayer, madeByEnemyA, madeByEnemyC, madeByEnemyD;
+  boolean madeByPlayer, madeByEnemyA, madeByEnemyC, madeByEnemyD, exists, piercing;
 
-  Bullet(PVector shootLoc, PVector loc1, PVector loc2, int bSize, int surviveTimeCurrent, int surviveTimeDeadline, int damage, int range, float speed, boolean madeByPlayer, boolean madeByEnemyA, boolean madeByEnemyC, boolean madeByEnemyD)
+  Bullet(PVector shootLoc, PVector loc1, PVector loc2, int bSize, int surviveTimeCurrent, int surviveTimeDeadline, int damage, int range, float speed, boolean madeByPlayer, boolean madeByEnemyA, boolean madeByEnemyC, boolean madeByEnemyD, boolean exists, boolean piercing)
   {
     this.shootLoc = shootLoc;
     this.loc1 = loc1;
@@ -20,6 +20,8 @@ class Bullet
     this.madeByEnemyA = madeByEnemyA;
     this.madeByEnemyC = madeByEnemyC;
     this.madeByEnemyD = madeByEnemyD;
+    this.exists = exists;
+    this.piercing = piercing;
   }
 
   void show()
