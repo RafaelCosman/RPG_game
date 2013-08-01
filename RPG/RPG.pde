@@ -94,7 +94,7 @@ void draw()
         {
           for (int y = y3 - steelShortswordReal.height / 2; y <= y3 + steelShortswordReal.height / 2; y ++)
           {
-            if (alpha(pixels[y * width + x]) != 254)
+            if (alpha(pixels[y * width + x]) == 255)
               realCollision1 = true;
           }
         }
@@ -105,7 +105,7 @@ void draw()
         {
           for (int y = y3 - steelShortswordReal.height / 2; y <= y3 + steelShortswordReal.height / 2; y ++)
           {
-            if (alpha(pixels[y * width + x]) != 254)
+            if (alpha(pixels[y * width + x]) == 255)
               realCollision2 = true;
           }
         }
