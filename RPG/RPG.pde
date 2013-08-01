@@ -70,13 +70,13 @@ void restart()
 
 void draw()
 {
-  pv.set(mouseX, mouseY, 0);
+  pv.set(mouseX - 100, mouseY - 100, 0);
   if (!restart)
   {
     if (!pause)
     {
-      background(127.5, 255);
-      fill(127.5, 255);
+      background(127.5, 254);
+      fill(127.5, 254);
       rect(width / 2, height / 2, width, height);
       p.show();
       camera(p.loc2.x, p.loc2.y, (height / 2) / tan(PI * 30 / 180), p.loc2.x, p.loc2.y, 0, 0, 1, 0);
@@ -84,33 +84,25 @@ void draw()
       boolean maskCollisionVertical = pv.y - steelShortswordReal2.height / 2 < y3 + steelShortswordReal.height / 2 && pv.y + steelShortswordReal2.height / 2 > y3 - steelShortswordReal.height / 2;
       image(steelShortswordReal, x3, y3);
       image(steelShortswordReal2, pv.x, pv.y);
+      loadPixels();
+      println(alpha(pixels[mouseY * width + mouseX]));
+      updatePixels();
       if (maskCollisionHorizontal && maskCollisionVertical)
       {
         loadPixels();
-        boolean realCollision1 = false;
-        background(127.5, 255);
-        image(steelShortswordReal, x3, y3);
+        boolean realCollision = false;
+        background(127.5, 254);
+        image(steelShortswordReal, pv.x, pv.y);
         for (int x = x3 - steelShortswordReal.width / 2; x <= x3 + steelShortswordReal.width / 2; x ++)
         {
           for (int y = y3 - steelShortswordReal.height / 2; y <= y3 + steelShortswordReal.height / 2; y ++)
           {
             if (alpha(pixels[y * width + x]) == 255)
-              realCollision1 = true;
-          }
-        }
-        boolean realCollision2 = false;
-        background(127.5, 255);
-        image(steelShortswordReal2, pv.x, pv.y);
-        for (int x = x3 - steelShortswordReal.width / 2; x <= x3 + steelShortswordReal.width / 2; x ++)
-        {
-          for (int y = y3 - steelShortswordReal.height / 2; y <= y3 + steelShortswordReal.height / 2; y ++)
-          {
-            if (alpha(pixels[y * width + x]) == 255)
-              realCollision2 = true;
+              realCollision = true;
           }
         }
         updatePixels();
-        if (realCollision1 && realCollision2)
+        if (realCollision)
           restart = true;
       }
       if (millis() - questTime - pauseTime >= 5000)
