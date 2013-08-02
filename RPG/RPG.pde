@@ -1,3 +1,23 @@
+/// Comments beginning with a triple slash are notes added by Ben.
+/// They will often begin "/// Pn TODO: ..." where Pn will
+/// be a priority score approximately as follows:
+///   P0: major bug
+///   P1: minor bug or major style issue
+///   P2: medium style issue or performance issue
+///   P3: minor style issue
+///   P4: very minor suggestion (in fact I give you two additional
+///       options for resoving P4s: you can ask me to do it for you,
+///       or you can even just delete it without doing anything (i.e.
+///       if you disagree with my suggestion).
+/// You should remove these TODOs as you complete them. THERE IS *NO*
+/// HURRY FOR YOU TO DEAL WITH THEM, but remember that I will in
+/// general be teaching you things that will make your code easier
+/// to use and read, so working on these will both be good experience
+/// for your future as a programmer and also for me being able to fix
+/// your bugs faster right now. If I teach you something like a
+/// style guideline in one of these notes, please apply that to all
+/// similar cases in your code and not just the labeled line.
+
 Player p;
 PVector shotSpread;
 ArrayList enemiesA;
@@ -7,6 +27,10 @@ ArrayList<Bullet> bullets;
 ArrayList<Bullet> allBullets;
 PImage steelShortswordReal;
 PImage steelShortswordReal2;
+/// P3 TODO: By convention, global variables that are set once up here and never changed should be labeled "final" and should have their name in ALL_CAPS (with underscores separating words if there are more than one). 
+/// If you follow this convention, then a reader knows that whenever they see an ALL_CAPS variable, if they want to figure out the value of the variable they can just look at the top and not have to worry about 
+/// scanning your whole code for places it may have changed. Note that in order for this convention to be useful you need to use it consistently, so for example the "HP" field in Enemy should be "hp" instead because
+/// it's *not* a final constant.
 PFont font = createFont("Arial", 32);
 boolean[] keys = new boolean[4];
 boolean restart;
@@ -17,18 +41,25 @@ int pauseTime;
 int pauseStart;
 int weapon = 1;
 int eACreate;
+/// P3 TODO: Remove totally unused variables; they pointlessly clutters your code.
 int eBCreate;
 int eCCreate;
 int eDCreate;
 int questTime;
+/// P2 TODO: These variables are logically a single unit - they are properties of the same thing (the sword), and they are always set or accessed at the same time. Why not 
+/// group them into a single PVector to make that intent more clear to the reader?
 int x3;
 int y3;
+/// P1 TODO: Use more descriptive names for variables; it is better to err on the side of too descriptive (the cost there is you have to type a bit more) than on the 
+/// side of not descriptive enough (the cost there is that every reader has to waste time figuring out what is going on, and it is harder for everyone to catch logic bugs)
 PVector pv = new PVector(mouseX, mouseY);
 float eACreateModifier;
 float eBCreateModifier;
 float eCCreateModifier;
 float eDCreateModifier;
 
+/// P4 TODO: Modern code style recommends not giving opening braces a line to themselves (see http://processing.org/examples/widthheight.html for an example), mostly just because people think that
+/// this way you can fit more code on your screen without making it any less readable.
 void setup()
 {
   size(600, 600, P3D);
@@ -56,6 +87,7 @@ void restart()
   enemiesD = new ArrayList<Bullet>();
   bullets = new ArrayList<Bullet>();
   allBullets = new ArrayList();
+  /// P1 TODO: Think about the value and uses of pauseTime over the rest of this method. Are you sure you're doing what you want to be doing?
   p = new Player(new PVector(width / 2, height / 2), new PVector(width / 2, height / 2), 15, millis() - pauseTime, 10000000, 10, 0, 1);
   x3 = 100;
   y3 = 100;
@@ -71,6 +103,9 @@ void restart()
 void draw()
 {
   pv.set(mouseX - 100, mouseY - 100, 0);
+  /// P2 TODO: Really long blocks of code should be avoided because the logic is less clear to the reader - I try to wrap my mind around what is supposed to happen if restart is false and I can't because
+  /// it's literally everything else in draw. (a block is a set of lines between braces, in this case the ... of the "if (!restart) {...}")
+  /// Can you think of a way of accomplishing the same effect without wrapping so much code into this if statement? (Hint: you can exit a method with the "return" statement.)
   if (!restart)
   {
     if (!pause)
@@ -198,6 +233,8 @@ void draw()
           p.shootTime = millis() - pauseTime;
         }
       }
+      /// P2 TODO: Clever use of an "exists" field in each Bullet to solve the index removal problem! Is the list allBullets even necessary now? The only problem with this plan is that since you never actually remove
+      /// Bullets from the lists, if the game runs long enough you may start to see lag since the for-each loop has to scan through more and more defunct Bullets.
       allBullets = bullets;
       for (Bullet b : allBullets)
       {
@@ -277,6 +314,7 @@ void keyReleased()
 
 void bulletBehavior(ArrayList enemyList, Bullet b)
 {
+  /// P1 TODO: This is another unsafe use of indices - you remove enemies from your enemyList while you're iterating over it. Find a way to get rid of the variable i2 entirely, just like we did for the Bullet indices.
   for (int i2 = 0; i2 <= enemyList.size() - 1; i2 ++)
   {
     Enemy e = (Enemy) enemyList.get(i2);
