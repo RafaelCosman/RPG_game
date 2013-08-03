@@ -25,8 +25,15 @@ ArrayList enemiesC;
 ArrayList enemiesD;
 ArrayList<Bullet> bullets;
 ArrayList<Bullet> allBullets;
+<<<<<<< HEAD
 PVector loc1 = new PVector(10, 10);
 PVector loc2 = new PVector(mouseX, mouseY);
+=======
+PImage steelShortswordReal;
+PImage steelShortswordMask;
+PImage steelShortswordReal2;
+PImage steelShortswordMask2;
+>>>>>>> 80a028e10a7f40c54ec2a7c59632d7714b925ce4
 /// P3 TODO: By convention, global variables that are set once up here and never changed should be labeled "final" and should have their name in ALL_CAPS (with underscores separating words if there are more than one). 
 /// If you follow this convention, then a reader knows that whenever they see an ALL_CAPS variable, if they want to figure out the value of the variable they can just look at the top and not have to worry about 
 /// scanning your whole code for places it may have changed. Note that in order for this convention to be useful you need to use it consistently, so for example the "HP" field in Enemy should be "hp" instead because
@@ -52,6 +59,8 @@ int x3;
 int y3;
 /// P1 TODO: Use more descriptive names for variables; it is better to err on the side of too descriptive (the cost there is you have to type a bit more) than on the 
 /// side of not descriptive enough (the cost there is that every reader has to waste time figuring out what is going on, and it is harder for everyone to catch logic bugs)
+int px3;
+int py3;
 PVector pv = new PVector(mouseX, mouseY);
 float eACreateModifier;
 float eBCreateModifier;
@@ -68,8 +77,10 @@ void setup()
   rectMode(CENTER);
   imageMode(CENTER);
   shotSpread = new PVector();
-  steelShortswordReal = loadImage("Steel Shortsword (Real).png");
-  steelShortswordReal2 = loadImage("Steel Shortsword (Real).png");
+  steelShortswordReal = loadImage("Steel Shortsword (Real).jpg");
+  steelShortswordMask = loadImage("Steel Shortsword (Mask).jpg");
+  steelShortswordReal2 = loadImage("Steel Shortsword (Real).jpg");
+  steelShortswordMask2 = loadImage("Steel Shortsword (Mask).jpg");
   textFont(font);
   restart();
 }
@@ -91,6 +102,8 @@ void restart()
   p = new Player(new PVector(width / 2, height / 2), new PVector(width / 2, height / 2), 15, millis() - pauseTime, 10000000, 10, 0, 1);
   x3 = 100;
   y3 = 100;
+  px3 = 100;
+  py3 = 100;
   pauseTime = 0;
   pauseStart = 0;
   eACreate = millis() - pauseTime;
@@ -102,7 +115,7 @@ void restart()
 
 void draw()
 {
-  pv.set(mouseX - 100, mouseY - 100, 0);
+  pv.set(mouseX, mouseY, 0);
   /// P2 TODO: Really long blocks of code should be avoided because the logic is less clear to the reader - I try to wrap my mind around what is supposed to happen if restart is false and I can't because
   /// it's literally everything else in draw. (a block is a set of lines between braces, in this case the ... of the "if (!restart) {...}")
   /// Can you think of a way of accomplishing the same effect without wrapping so much code into this if statement? (Hint: you can exit a method with the "return" statement.)
@@ -110,11 +123,34 @@ void draw()
   {
     if (!pause)
     {
-      background(127.5, 254);
-      fill(127.5, 254);
+      background(127.5);
+      fill(127.5);
       rect(width / 2, height / 2, width, height);
       p.show();
       camera(p.loc2.x, p.loc2.y, (height / 2) / tan(PI * 30 / 180), p.loc2.x, p.loc2.y, 0, 0, 1, 0);
+<<<<<<< HEAD
+=======
+      boolean maskCollisionHorizontal = pv.x - steelShortswordReal2.width / 2 < x3 + steelShortswordReal.width / 2 && pv.x + steelShortswordReal2.width / 2 > x3 - steelShortswordReal.width / 2;
+      boolean maskCollisionVertical = pv.y - steelShortswordReal2.height / 2 < y3 + steelShortswordReal.height / 2 && pv.y + steelShortswordReal2.height / 2 > y3 - steelShortswordReal.height / 2;
+      if (maskCollisionHorizontal && maskCollisionVertical)
+      {
+        loadPixels();
+        for (int x = 0; x <= steelShortswordReal.width; x ++)
+        {
+          for (int y = 0; y <= steelShortswordReal.height; y ++)
+          {
+            int xOffset = int(x3 - pv.x);
+            int yOffset = int(y3 - pv.y);
+            int loc = x + (y * steelShortswordReal.width);
+            if (steelShortswordMask.pixels[loc] == color(0) && steelShortswordMask2.pixels[loc] == color(0))
+              restart();
+          }
+        }
+        updatePixels();
+      }
+      image(steelShortswordReal, x3, y3);
+      image(steelShortswordReal2, pv.x, pv.y);
+>>>>>>> 80a028e10a7f40c54ec2a7c59632d7714b925ce4
       if (millis() - questTime - pauseTime >= 5000)
       {
         questTime = millis() - pauseTime;
@@ -233,6 +269,8 @@ void draw()
           b.show();
         }
       }
+      x3 = px3;
+      y3 = py3;
     }
     else
       pauseTime = millis() - pauseStart;
