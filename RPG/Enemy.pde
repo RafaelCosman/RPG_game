@@ -1,11 +1,10 @@
-class Enemy
+abstract class Enemy
 {
-  boolean[] hitBy;
   PVector loc1, loc2;
   int eSize, moveTime, moveChange, shootTime, HP, value;
-  boolean fatal, partOfQuest, exists;
+  boolean partOfQuest, exists;
 
-  Enemy(boolean[] hitBy, PVector loc1, PVector loc2, int eSize, int moveTime, int moveChange, int shootTime, int HP, int value, boolean fatal, boolean partOfQuest, boolean exists)
+  Enemy(PVector loc1, PVector loc2, int eSize, int moveTime, int moveChange, int shootTime, int HP, int value, boolean partOfQuest, boolean exists)
   {
     this.loc1 = loc1;
     this.loc2 = loc2;
@@ -15,9 +14,31 @@ class Enemy
     this.shootTime = shootTime;
     this.HP = HP;
     this.value = value;
-    this.fatal = fatal;
-    this.hitBy = hitBy;
     this.partOfQuest = partOfQuest;
     this.exists = exists;
   }
+
+  void show()
+  {
+    if (millis() - moveTime - pauseTime >= moveChange)
+    {
+      loc1 = PVector.random2D();
+      moveTime = millis() - pauseTime;
+      moveChange = int(random(250, 1250));
+    }
+    loc2.add(loc1);
+    if (loc2.x > width - (eSize / 2))
+      loc2.x = width - (eSize / 2);
+    else if (loc2.x < (eSize / 2))
+      loc2.x = (eSize / 2);
+    if (loc2.y > height - (eSize / 2))
+      loc2.y = height - (eSize / 2);
+    else if (loc2.y < (eSize / 2))
+      loc2.y = (eSize / 2);
+    if (partOfQuest)
+      stroke(255);
+    ellipse(loc2.x, loc2.y, eSize, eSize);
+    noStroke();
+  }
 }
+

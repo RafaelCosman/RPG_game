@@ -148,17 +148,16 @@ void draw()
       {
         eACreate = millis() - pauseTime;
         eACreateModifier *= .975;
-        enemiesA.add(new EnemyA(new boolean[999], new PVector(0, 0), new PVector(random(width), random(height)), 25, millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime, 15, false, false, true));
+        enemiesA.add(new EnemyA(new PVector(0, 0), new PVector(random(width), random(height)), millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime));
         EnemyA e = (EnemyA) enemiesA.get(enemiesA.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
           e.loc2.set(random(width), random(height), 0);
-        e.fatal = true;
       }
       for (int i = 0; i <= enemiesA.size() - 1; i ++)
       {
         if (!pause)
         {
-          EnemyA e = (EnemyA) enemiesA.get(i);
+          Enemy e = (Enemy) enemiesA.get(i);
           if (e.exists)
             e.show();
         }
@@ -167,17 +166,16 @@ void draw()
       {
         eCCreate = millis() - pauseTime;
         eCCreateModifier *= .975;
-        enemiesC.add(new EnemyC(new boolean[999], new PVector(0, 0), new PVector(random(width), random(height)), 25, millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime, 15, 3, false, false, true));
+        enemiesC.add(new EnemyC(new PVector(0, 0), new PVector(random(width), random(height)), millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime));
         EnemyC e = (EnemyC) enemiesC.get(enemiesC.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
           e.loc2.set(random(width), random(height), 0);
-        e.fatal = true;
       }
       for (int i = 0; i <= enemiesC.size() - 1; i ++)
       {
         if (!pause)
         {
-          EnemyC e = (EnemyC) enemiesC.get(i);
+          Enemy e = (Enemy) enemiesC.get(i);
           if (e.exists)
             e.show();
         }
@@ -186,17 +184,16 @@ void draw()
       {
         eDCreate = millis() - pauseTime;
         eDCreateModifier *= .975;
-        enemiesD.add(new EnemyD(new boolean[999], new PVector(0, 0), new PVector(random(width), random(height)), 25, millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime, 25, 11, false, false, true));
+        enemiesD.add(new EnemyD(new PVector(0, 0), new PVector(random(width), random(height)), millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime));
         EnemyD e = (EnemyD) enemiesD.get(enemiesD.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
           e.loc2.set(random(width), random(height), 0);
-        e.fatal = true;
       }
       for (int i = 0; i <= enemiesD.size() - 1; i ++)
       {
         if (!pause)
         {
-          EnemyD e = (EnemyD) enemiesD.get(i);
+          Enemy e = (Enemy) enemiesD.get(i);
           if (e.exists)
             e.show();
         }
@@ -321,7 +318,7 @@ void bulletBehavior(ArrayList<Enemy> enemyList, Bullet b)
 {
   for (Enemy e : enemyList)
   {
-    if (b.exists && dist(e.loc2.x, e.loc2.y, b.loc2.x, b.loc2.y) <= e.eSize / 2 + (b.bSize / 2) && e.fatal)
+    if (b.exists && dist(e.loc2.x, e.loc2.y, b.loc2.x, b.loc2.y) <= e.eSize / 2 + (b.bSize / 2))
     {
       if (!b.piercing)
         b.exists = false;
