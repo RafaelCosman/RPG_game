@@ -3,9 +3,9 @@ class Enemy
   boolean[] hitBy;
   PVector loc1, loc2;
   int eSize, moveTime, moveChange, shootTime, HP, value;
-  boolean fatal, partOfQuest;
+  boolean fatal, partOfQuest, exists;
 
-  Enemy(boolean[] hitBy, PVector loc1, PVector loc2, int eSize, int moveTime, int moveChange, int shootTime, int HP, int value, boolean fatal, boolean partOfQuest)
+  Enemy(boolean[] hitBy, PVector loc1, PVector loc2, int eSize, int moveTime, int moveChange, int shootTime, int HP, int value, boolean fatal, boolean partOfQuest, boolean exists)
   {
     this.loc1 = loc1;
     this.loc2 = loc2;
@@ -18,5 +18,6 @@ class Enemy
     this.fatal = fatal;
     this.hitBy = hitBy;
     this.partOfQuest = partOfQuest;
+    this.exists = exists;
   }
 }

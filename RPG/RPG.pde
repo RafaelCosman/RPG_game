@@ -24,16 +24,12 @@ ArrayList enemiesA;
 ArrayList enemiesC;
 ArrayList enemiesD;
 ArrayList<Bullet> bullets;
-ArrayList<Bullet> allBullets;
-<<<<<<< HEAD
-PVector loc1 = new PVector(10, 10);
-PVector loc2 = new PVector(mouseX, mouseY);
-=======
-PImage steelShortswordReal;
-PImage steelShortswordMask;
-PImage steelShortswordReal2;
-PImage steelShortswordMask2;
->>>>>>> 80a028e10a7f40c54ec2a7c59632d7714b925ce4
+color FOREGROUND = color(0);
+color BACKGROUND = color(255);
+PImage img1;
+PImage mask1;
+PImage img2;
+PImage mask2;
 /// P3 TODO: By convention, global variables that are set once up here and never changed should be labeled "final" and should have their name in ALL_CAPS (with underscores separating words if there are more than one). 
 /// If you follow this convention, then a reader knows that whenever they see an ALL_CAPS variable, if they want to figure out the value of the variable they can just look at the top and not have to worry about 
 /// scanning your whole code for places it may have changed. Note that in order for this convention to be useful you need to use it consistently, so for example the "HP" field in Enemy should be "hp" instead because
@@ -53,14 +49,6 @@ int eBCreate;
 int eCCreate;
 int eDCreate;
 int questTime;
-/// P2 TODO: These variables are logically a single unit - they are properties of the same thing (the sword), and they are always set or accessed at the same time. Why not 
-/// group them into a single PVector to make that intent more clear to the reader?
-int x3;
-int y3;
-/// P1 TODO: Use more descriptive names for variables; it is better to err on the side of too descriptive (the cost there is you have to type a bit more) than on the 
-/// side of not descriptive enough (the cost there is that every reader has to waste time figuring out what is going on, and it is harder for everyone to catch logic bugs)
-int px3;
-int py3;
 PVector pv = new PVector(mouseX, mouseY);
 float eACreateModifier;
 float eBCreateModifier;
@@ -71,16 +59,16 @@ float eDCreateModifier;
 /// this way you can fit more code on your screen without making it any less readable.
 void setup()
 {
-  size(600, 600, P3D);
+  size(550, 550, P3D);
   smooth();
   noStroke();
   rectMode(CENTER);
   imageMode(CENTER);
   shotSpread = new PVector();
-  steelShortswordReal = loadImage("Steel Shortsword (Real).jpg");
-  steelShortswordMask = loadImage("Steel Shortsword (Mask).jpg");
-  steelShortswordReal2 = loadImage("Steel Shortsword (Real).jpg");
-  steelShortswordMask2 = loadImage("Steel Shortsword (Mask).jpg");
+  img1 = loadImage("Steel Shortsword (Real).png");
+  mask1 = loadImage("Steel Shortsword (Mask).jpg");
+  img2 = loadImage("Steel Shortsword (Real).png");
+  mask2 = loadImage("Steel Shortsword (Mask).jpg");
   textFont(font);
   restart();
 }
@@ -97,13 +85,8 @@ void restart()
   enemiesC = new ArrayList();
   enemiesD = new ArrayList<Bullet>();
   bullets = new ArrayList<Bullet>();
-  allBullets = new ArrayList();
   /// P1 TODO: Think about the value and uses of pauseTime over the rest of this method. Are you sure you're doing what you want to be doing?
   p = new Player(new PVector(width / 2, height / 2), new PVector(width / 2, height / 2), 15, millis() - pauseTime, 10000000, 10, 0, 1);
-  x3 = 100;
-  y3 = 100;
-  px3 = 100;
-  py3 = 100;
   pauseTime = 0;
   pauseStart = 0;
   eACreate = millis() - pauseTime;
@@ -128,29 +111,12 @@ void draw()
       rect(width / 2, height / 2, width, height);
       p.show();
       camera(p.loc2.x, p.loc2.y, (height / 2) / tan(PI * 30 / 180), p.loc2.x, p.loc2.y, 0, 0, 1, 0);
-<<<<<<< HEAD
-=======
-      boolean maskCollisionHorizontal = pv.x - steelShortswordReal2.width / 2 < x3 + steelShortswordReal.width / 2 && pv.x + steelShortswordReal2.width / 2 > x3 - steelShortswordReal.width / 2;
-      boolean maskCollisionVertical = pv.y - steelShortswordReal2.height / 2 < y3 + steelShortswordReal.height / 2 && pv.y + steelShortswordReal2.height / 2 > y3 - steelShortswordReal.height / 2;
-      if (maskCollisionHorizontal && maskCollisionVertical)
-      {
-        loadPixels();
-        for (int x = 0; x <= steelShortswordReal.width; x ++)
-        {
-          for (int y = 0; y <= steelShortswordReal.height; y ++)
-          {
-            int xOffset = int(x3 - pv.x);
-            int yOffset = int(y3 - pv.y);
-            int loc = x + (y * steelShortswordReal.width);
-            if (steelShortswordMask.pixels[loc] == color(0) && steelShortswordMask2.pixels[loc] == color(0))
-              restart();
-          }
-        }
-        updatePixels();
-      }
-      image(steelShortswordReal, x3, y3);
-      image(steelShortswordReal2, pv.x, pv.y);
->>>>>>> 80a028e10a7f40c54ec2a7c59632d7714b925ce4
+      PVector loc1 = new PVector(100, 100);
+      PVector loc2 = new PVector(mouseX, mouseY);
+      image(img1, loc1);
+      image(img2, loc2);
+      PVector offset = PVector.sub(loc2, loc1);
+      println(collisionDetection(offset));
       if (millis() - questTime - pauseTime >= 5000)
       {
         questTime = millis() - pauseTime;
@@ -181,7 +147,7 @@ void draw()
       {
         eACreate = millis() - pauseTime;
         eACreateModifier *= .975;
-        enemiesA.add(new EnemyA(new boolean[999], new PVector(0, 0), new PVector(random(width), random(height)), 25, millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime, 15, 3, false, false));
+        enemiesA.add(new EnemyA(new boolean[999], new PVector(0, 0), new PVector(random(width), random(height)), 25, millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime, 15, 3, false, false, true));
         EnemyA e = (EnemyA) enemiesA.get(enemiesA.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
           e.loc2.set(random(width), random(height), 0);
@@ -192,14 +158,15 @@ void draw()
         if (!pause)
         {
           EnemyA e = (EnemyA) enemiesA.get(i);
-          e.show();
+          if (e.exists)
+            e.show();
         }
       }
       if (millis() - eCCreate - pauseTime >= 1500 * eCCreateModifier && !pause)
       {
         eCCreate = millis() - pauseTime;
         eCCreateModifier *= .975;
-        enemiesC.add(new EnemyC(new boolean[999], new PVector(0, 0), new PVector(random(width), random(height)), 25, millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime, 15, 3, false, false));
+        enemiesC.add(new EnemyC(new boolean[999], new PVector(0, 0), new PVector(random(width), random(height)), 25, millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime, 15, 3, false, false, true));
         EnemyC e = (EnemyC) enemiesC.get(enemiesC.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
           e.loc2.set(random(width), random(height), 0);
@@ -210,14 +177,15 @@ void draw()
         if (!pause)
         {
           EnemyC e = (EnemyC) enemiesC.get(i);
-          e.show();
+          if (e.exists)
+            e.show();
         }
       }
       if (millis() - eDCreate - pauseTime >= 2750 * eDCreateModifier && !pause)
       {
         eDCreate = millis() - pauseTime;
         eDCreateModifier *= .975;
-        enemiesD.add(new EnemyD(new boolean[999], new PVector(0, 0), new PVector(random(width), random(height)), 25, millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime, 25, 11, false, false));
+        enemiesD.add(new EnemyD(new boolean[999], new PVector(0, 0), new PVector(random(width), random(height)), 25, millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime, 25, 11, false, false, true));
         EnemyD e = (EnemyD) enemiesD.get(enemiesD.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
           e.loc2.set(random(width), random(height), 0);
@@ -228,7 +196,8 @@ void draw()
         if (!pause)
         {
           EnemyD e = (EnemyD) enemiesD.get(i);
-          e.show();
+          if (e.exists)
+            e.show();
         }
       }
       if ((mousePressed || autoFireOn))
@@ -244,10 +213,7 @@ void draw()
           p.shootTime = millis() - pauseTime;
         }
       }
-      /// P2 TODO: Clever use of an "exists" field in each Bullet to solve the index removal problem! Is the list allBullets even necessary now? The only problem with this plan is that since you never actually remove
-      /// Bullets from the lists, if the game runs long enough you may start to see lag since the for-each loop has to scan through more and more defunct Bullets.
-      allBullets = bullets;
-      for (Bullet b : allBullets)
+      for (Bullet b : bullets)
       {
         if (b.exists)
         {
@@ -269,8 +235,33 @@ void draw()
           b.show();
         }
       }
-      x3 = px3;
-      y3 = py3;
+      for (int i = 0; i <= enemiesA.size() - 1; i ++)
+      {
+        Enemy e = (Enemy) enemiesA.get(i);
+        if (!e.exists)
+        {
+          enemiesA.remove(i);
+          continue;
+        }
+      }
+      for (int i = 0; i <= enemiesC.size() - 1; i ++)
+      {
+        Enemy e = (Enemy) enemiesC.get(i);
+        if (!e.exists)
+        {
+          enemiesC.remove(i);
+          continue;
+        }
+      }
+      for (int i = 0; i <= enemiesD.size() - 1; i ++)
+      {
+        Enemy e = (Enemy) enemiesD.get(i);
+        if (!e.exists)
+        {
+          enemiesD.remove(i);
+          continue;
+        }
+      }
     }
     else
       pauseTime = millis() - pauseStart;
@@ -325,12 +316,10 @@ void keyReleased()
     keys[3] = false;
 }
 
-void bulletBehavior(ArrayList enemyList, Bullet b)
+void bulletBehavior(ArrayList<Enemy> enemyList, Bullet b)
 {
-  /// P1 TODO: This is another unsafe use of indices - you remove enemies from your enemyList while you're iterating over it. Find a way to get rid of the variable i2 entirely, just like we did for the Bullet indices.
-  for (int i2 = 0; i2 <= enemyList.size() - 1; i2 ++)
+  for (Enemy e : enemyList)
   {
-    Enemy e = (Enemy) enemyList.get(i2);
     if (b.exists && dist(e.loc2.x, e.loc2.y, b.loc2.x, b.loc2.y) <= e.eSize / 2 + (b.bSize / 2) && e.fatal)
     {
       if (!b.piercing)
@@ -339,12 +328,22 @@ void bulletBehavior(ArrayList enemyList, Bullet b)
     }
     if (e.HP <= 0)
     {
-      enemyList.remove(i2);
+      e.exists = false;
       if (e.partOfQuest)
         p.XP += e.value + 10;
       else
         p.XP += e.value;
     }
   }
+}
+
+boolean collisionDetection(PVector offset)
+{
+  for (int x = 0; x < mask1.width; x++)
+    for (int y = 0; y < mask1.height; y++)
+      if (mask1.get(x, y) == FOREGROUND && mask2.get(int(x + offset.x), int(y + offset.y)) == FOREGROUND)
+        return true;
+
+  return false;
 }
 
