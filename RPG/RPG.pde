@@ -26,7 +26,6 @@ ArrayList enemiesD;
 ArrayList<Bullet> bullets;
 ArrayList<Bullet> allBullets;
 <<<<<<< HEAD
-<<<<<<< HEAD
 PVector loc1 = new PVector(10, 10);
 PVector loc2 = new PVector(mouseX, mouseY);
 =======
@@ -35,10 +34,6 @@ PImage steelShortswordMask;
 PImage steelShortswordReal2;
 PImage steelShortswordMask2;
 >>>>>>> 80a028e10a7f40c54ec2a7c59632d7714b925ce4
-=======
-PImage steelShortswordReal;
-PImage steelShortswordReal2;
->>>>>>> parent of dece40b... this is a noob commmit. It should be rolled back.
 /// P3 TODO: By convention, global variables that are set once up here and never changed should be labeled "final" and should have their name in ALL_CAPS (with underscores separating words if there are more than one). 
 /// If you follow this convention, then a reader knows that whenever they see an ALL_CAPS variable, if they want to figure out the value of the variable they can just look at the top and not have to worry about 
 /// scanning your whole code for places it may have changed. Note that in order for this convention to be useful you need to use it consistently, so for example the "HP" field in Enemy should be "hp" instead because
@@ -134,7 +129,6 @@ void draw()
       p.show();
       camera(p.loc2.x, p.loc2.y, (height / 2) / tan(PI * 30 / 180), p.loc2.x, p.loc2.y, 0, 0, 1, 0);
 <<<<<<< HEAD
-<<<<<<< HEAD
 =======
       boolean maskCollisionHorizontal = pv.x - steelShortswordReal2.width / 2 < x3 + steelShortswordReal.width / 2 && pv.x + steelShortswordReal2.width / 2 > x3 - steelShortswordReal.width / 2;
       boolean maskCollisionVertical = pv.y - steelShortswordReal2.height / 2 < y3 + steelShortswordReal.height / 2 && pv.y + steelShortswordReal2.height / 2 > y3 - steelShortswordReal.height / 2;
@@ -157,33 +151,6 @@ void draw()
       image(steelShortswordReal, x3, y3);
       image(steelShortswordReal2, pv.x, pv.y);
 >>>>>>> 80a028e10a7f40c54ec2a7c59632d7714b925ce4
-=======
-      boolean maskCollisionHorizontal = pv.x - steelShortswordReal2.width / 2 < x3 + steelShortswordReal.width / 2 && pv.x + steelShortswordReal2.width / 2 > x3 - steelShortswordReal.width / 2;
-      boolean maskCollisionVertical = pv.y - steelShortswordReal2.height / 2 < y3 + steelShortswordReal.height / 2 && pv.y + steelShortswordReal2.height / 2 > y3 - steelShortswordReal.height / 2;
-      image(steelShortswordReal, x3, y3);
-      image(steelShortswordReal2, pv.x, pv.y);
-      loadPixels();
-      println(alpha(pixels[mouseY * width + mouseX]));
-      updatePixels();
-      if (maskCollisionHorizontal && maskCollisionVertical)
-      {
-        loadPixels();
-        boolean realCollision = false;
-        background(127.5, 254);
-        image(steelShortswordReal, pv.x, pv.y);
-        for (int x = x3 - steelShortswordReal.width / 2; x <= x3 + steelShortswordReal.width / 2; x ++)
-        {
-          for (int y = y3 - steelShortswordReal.height / 2; y <= y3 + steelShortswordReal.height / 2; y ++)
-          {
-            if (alpha(pixels[y * width + x]) == 255)
-              realCollision = true;
-          }
-        }
-        updatePixels();
-        if (realCollision)
-          restart = true;
-      }
->>>>>>> parent of dece40b... this is a noob commmit. It should be rolled back.
       if (millis() - questTime - pauseTime >= 5000)
       {
         questTime = millis() - pauseTime;
@@ -380,3 +347,4 @@ void bulletBehavior(ArrayList enemyList, Bullet b)
     }
   }
 }
+
