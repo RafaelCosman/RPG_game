@@ -1,10 +1,10 @@
 abstract class Enemy
 {
   PVector loc1, loc2;
-  int eSize, moveTime, moveChange, shootTime, HP, value;
+  int eSize, moveTime, moveChange, shootTime, hp, value;
   boolean partOfQuest, exists;
 
-  Enemy(PVector loc1, PVector loc2, int eSize, int moveTime, int moveChange, int shootTime, int HP, int value, boolean partOfQuest, boolean exists)
+  Enemy(PVector loc1, PVector loc2, int eSize, int moveTime, int moveChange, int shootTime, int hp, int value, boolean partOfQuest, boolean exists)
   {
     this.loc1 = loc1;
     this.loc2 = loc2;
@@ -12,7 +12,7 @@ abstract class Enemy
     this.moveTime = moveTime;
     this.moveChange = moveChange;
     this.shootTime = shootTime;
-    this.HP = HP;
+    this.hp = hp;
     this.value = value;
     this.partOfQuest = partOfQuest;
     this.exists = exists;

@@ -32,8 +32,8 @@ PImage img2;
 PImage mask2;
 /// P3 TODO: By convention, global variables that are set once up here and never changed should be labeled "final" and should have their name in ALL_CAPS (with underscores separating words if there are more than one). 
 /// If you follow this convention, then a reader knows that whenever they see an ALL_CAPS variable, if they want to figure out the value of the variable they can just look at the top and not have to worry about 
-/// scanning your whole code for places it may have changed. Note that in order for this convention to be useful you need to use it consistently, so for example the "HP" field in Enemy should be "hp" instead because
-/// it's *not* a final constant.
+/// scanning your whole code for places it may have changed. Note that in order for this convention to be useful you need to use it consistently, so I changed the "HP" (and "XP") fields in Enemy and Player to "hp" 
+/// instead because they're *not* final constant.
 PFont font = createFont("Arial", 32);
 boolean[] keys = new boolean[4];
 boolean restart;
@@ -141,9 +141,9 @@ void draw()
       }
       fill(0);
       textAlign(LEFT, TOP);
-      text(p.HP, p.loc2.x - (width / 2), p.loc2.y - (height / 2));
+      text(p.hp, p.loc2.x - (width / 2), p.loc2.y - (height / 2));
       textAlign(RIGHT, TOP);
-      text(p.XP, p.loc2.x + (width / 2), p.loc2.y - (height / 2));
+      text(p.xp, p.loc2.x + (width / 2), p.loc2.y - (height / 2));
       if (millis() - eACreate - pauseTime >= 1500 * eACreateModifier && !pause)
       {
         eACreate = millis() - pauseTime;
@@ -224,8 +224,8 @@ void draw()
           else if (dist(p.loc2.x, p.loc2.y, b.loc2.x, b.loc2.y) <= p.pSize / 2 + b.bSize / 2)
           {
             b.exists = false;
-            p.HP -= b.damage;
-            if (p.HP <= 0)
+            p.hp -= b.damage;
+            if (p.hp <= 0)
               restart = true;
           }
           if ((dist(b.loc2.x, b.loc2.y, b.shootLoc.x, b.shootLoc.y) >= b.range && b.range != -1) || (millis() - b.surviveTimeCurrent - pauseTime >= b.surviveTimeDeadline && b.surviveTimeDeadline != -1))
@@ -285,13 +285,13 @@ void keyPressed()
   }
   if (key == 'h')
   {
-    if (p.HP >= p.maxHP)
-      p.HP = p.maxHP;
+    if (p.hp >= p.maxHP)
+      p.hp = p.maxHP;
     else
-      p.HP ++;
+      p.hp ++;
   }
   if (key == 'x')
-    p.XP += 1;
+    p.xp += 1;
   if (key == 'a')
     keys[0] = true;
   if (key == 'd')
@@ -322,15 +322,15 @@ void bulletBehavior(ArrayList<Enemy> enemyList, Bullet b)
     {
       if (!b.piercing)
         b.exists = false;
-      e.HP -= b.damage;
+      e.hp -= b.damage;
     }
-    if (e.HP <= 0)
+    if (e.hp <= 0)
     {
       e.exists = false;
       if (e.partOfQuest)
-        p.XP += e.value + 10;
+        p.xp += e.value + 10;
       else
-        p.XP += e.value;
+        p.xp += e.value;
     }
   }
 }

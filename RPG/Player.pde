@@ -2,17 +2,17 @@ class Player
 {
   PVector loc1;
   PVector loc2;
-  int pSize, shootTime, HP, maxHP, XP, level;
+  int pSize, shootTime, hp, maxHP, xp, level;
 
-  Player(PVector loc1, PVector loc2, int pSize, int shootTime, int HP, int maxHP, int XP, int level)
+  Player(PVector loc1, PVector loc2, int pSize, int shootTime, int hp, int maxHP, int xp, int level)
   {
     this.loc1 = loc1;
     this.loc2 = loc2;
     this.pSize = pSize;
     this.shootTime = shootTime;
-    this.HP = HP;
+    this.hp = hp;
     this.maxHP = maxHP;
-    this.XP = XP;
+    this.xp = xp;
     this.level = level;
   }
 
@@ -55,9 +55,9 @@ class Player
     ellipse(loc2.x, loc2.y, pSize, pSize);
     for (int i = level; i <= level + 1; i ++)
     {
-      if (XP >= i)
+      if (xp >= i)
       {
-        XP -= i;
+        xp -= i;
         level ++;
         maxHP ++;
       }
