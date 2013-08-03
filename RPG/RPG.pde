@@ -62,6 +62,7 @@ void setup()
   size(550, 550, P3D);
   smooth();
   noStroke();
+  strokeWeight(3);
   rectMode(CENTER);
   imageMode(CENTER);
   shotSpread = new PVector();
@@ -129,12 +130,12 @@ void draw()
         }
         else if (randomEnemy <= enemiesA.size() - 1 + (enemiesC.size() - 1))
         {
-          EnemyA e = (EnemyA) enemiesA.get(int(random(enemiesA.size() - 1)));
+          EnemyC e = (EnemyC) enemiesC.get(int(random(enemiesC.size() - 1)));
           e.partOfQuest = true;
         }
         else
         {
-          EnemyA e = (EnemyA) enemiesA.get(int(random(enemiesA.size() - 1)));
+          EnemyD e = (EnemyD) enemiesD.get(int(random(enemiesD.size() - 1)));
           e.partOfQuest = true;
         }
       }
@@ -147,7 +148,7 @@ void draw()
       {
         eACreate = millis() - pauseTime;
         eACreateModifier *= .975;
-        enemiesA.add(new EnemyA(new boolean[999], new PVector(0, 0), new PVector(random(width), random(height)), 25, millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime, 15, 3, false, false, true));
+        enemiesA.add(new EnemyA(new boolean[999], new PVector(0, 0), new PVector(random(width), random(height)), 25, millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime, 15, false, false, true));
         EnemyA e = (EnemyA) enemiesA.get(enemiesA.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
           e.loc2.set(random(width), random(height), 0);
@@ -241,7 +242,7 @@ void draw()
         if (!e.exists)
         {
           enemiesA.remove(i);
-          continue;
+          break;
         }
       }
       for (int i = 0; i <= enemiesC.size() - 1; i ++)
@@ -250,7 +251,7 @@ void draw()
         if (!e.exists)
         {
           enemiesC.remove(i);
-          continue;
+          break;
         }
       }
       for (int i = 0; i <= enemiesD.size() - 1; i ++)
@@ -259,7 +260,7 @@ void draw()
         if (!e.exists)
         {
           enemiesD.remove(i);
-          continue;
+          break;
         }
       }
     }

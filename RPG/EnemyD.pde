@@ -23,9 +23,10 @@ class EnemyD extends Enemy
     else if (loc2.y < (eSize / 2))
       loc2.y = (eSize / 2);
     if (partOfQuest)
-      ;
+      stroke(255);
     fill(0, 0, 255);
     ellipse(loc2.x, loc2.y, eSize, eSize);
+    noStroke();
     if (millis() - shootTime - pauseTime >= 500 && !pause)
     {
       shotSpread.set(p.loc2.x - loc2.x, p.loc2.y - loc2.y, 0);

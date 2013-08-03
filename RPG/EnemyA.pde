@@ -1,8 +1,10 @@
 class EnemyA extends Enemy
 {
-  EnemyA(boolean[] hitBy, PVector loc1, PVector loc2, int eSize, int moveTime, int moveChange, int shootTime, int HP, int value, boolean fatal, boolean partOfQuest, boolean exists)
+  final static int INITIAL_XP_VALUE = 3;
+
+  EnemyA(boolean[] hitBy, PVector loc1, PVector loc2, int eSize, int moveTime, int moveChange, int shootTime, int HP, boolean fatal, boolean partOfQuest, boolean exists)
   {
-    super(hitBy, loc1, loc2, eSize, moveTime, moveChange, shootTime, HP, value, fatal, partOfQuest, exists);
+    super(hitBy, loc1, loc2, eSize, moveTime, moveChange, shootTime, HP, INITIAL_XP_VALUE, fatal, partOfQuest, exists);
   }
 
   void show()
@@ -23,9 +25,10 @@ class EnemyA extends Enemy
     else if (loc2.y < (eSize / 2))
       loc2.y = (eSize / 2);
     if (partOfQuest)
-      ;
+      stroke(255);
     fill(255, 255, 0);
     ellipse(loc2.x, loc2.y, eSize, eSize);
+    noStroke();
     if (millis() - shootTime - pauseTime >= 500 && !pause)
     {
       bullets.add(new Bullet(new PVector(loc2.x, loc2.y), new PVector(0, 0), new PVector(loc2.x, loc2.y), 5, millis() - pauseTime, 5000, 4, -1, 4, false, true, false, false, true, false));
@@ -33,3 +36,4 @@ class EnemyA extends Enemy
     }
   }
 }
+
