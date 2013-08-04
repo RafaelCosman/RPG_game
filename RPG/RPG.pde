@@ -51,7 +51,6 @@ int eDCreate;
 int questTime;
 PVector pv = new PVector(mouseX, mouseY);
 float eACreateModifier;
-float eBCreateModifier;
 float eCCreateModifier;
 float eDCreateModifier;
 
@@ -79,7 +78,6 @@ void restart()
   restart = false;
   pause = false;
   eACreateModifier = 1;
-  eBCreateModifier = 1;
   eCCreateModifier = 1;
   eDCreateModifier = 1;
   enemiesA = new ArrayList();
