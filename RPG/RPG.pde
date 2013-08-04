@@ -59,7 +59,7 @@ float eDCreateModifier;
 /// this way you can fit more code on your screen without making it any less readable.
 void setup()
 {
-  size(550, 550, P3D);
+  size(displayWidth, displayHeight, P3D);
   smooth();
   noStroke();
   strokeWeight(3);
@@ -109,7 +109,7 @@ void draw()
     {
       background(127.5);
       fill(127.5);
-      rect(width / 2, height / 2, width, height);
+      rect(width / 2, height / 2, width * 5, height * 5);
       p.show();
       camera(p.loc2.x, p.loc2.y, (height / 2) / tan(PI * 30 / 180), p.loc2.x, p.loc2.y, 0, 0, 1, 0);
       PVector loc1 = new PVector(100, 100);
@@ -127,8 +127,7 @@ void draw()
         {
           EnemyA e = (EnemyA) enemiesA.get(int(random(enemiesA.size() - 1)));
           e.partOfQuest = true;
-        }
-        else if (randomEnemy <= enemiesA.size() - 1 + (enemiesC.size() - 1))
+        } else if (randomEnemy <= enemiesA.size() - 1 + (enemiesC.size() - 1))
         {
           EnemyC e = (EnemyC) enemiesC.get(int(random(enemiesC.size() - 1)));
           e.partOfQuest = true;
@@ -220,8 +219,7 @@ void draw()
             bulletBehavior(enemiesA, b);
             bulletBehavior(enemiesC, b);
             bulletBehavior(enemiesD, b);
-          }
-          else if (dist(p.loc2.x, p.loc2.y, b.loc2.x, b.loc2.y) <= p.pSize / 2 + b.bSize / 2)
+          } else if (dist(p.loc2.x, p.loc2.y, b.loc2.x, b.loc2.y) <= p.pSize / 2 + b.bSize / 2)
           {
             b.exists = false;
             p.hp -= b.damage;
@@ -344,4 +342,3 @@ boolean collisionDetection(PVector offset)
 
   return false;
 }
-
