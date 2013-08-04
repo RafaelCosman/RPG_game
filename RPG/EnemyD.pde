@@ -15,7 +15,7 @@ class EnemyD extends Enemy
   {
     fill(0, 0, 255);
     super.show();
-    if (millis() - shootTime - pauseTime >= 500 && !pause)
+    if (millis() - shootTime - pauseTime >= 500 && !isPaused)
     {
       shotSpread.set(p.loc2.x - loc2.x, p.loc2.y - loc2.y, 0);
       bullets.add(new Bullet(new PVector(loc2.x, loc2.y), new PVector(shotSpread.x, shotSpread.y), new PVector(loc2.x, loc2.y), 5, millis() - pauseTime, -1, 2, 275, 4, false, false, false, true, true, true));
