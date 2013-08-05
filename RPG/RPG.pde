@@ -20,10 +20,7 @@
 
 Player p;
 PVector shotSpread;
-ArrayList enemiesA;
-ArrayList enemiesB;
-ArrayList enemiesC;
-ArrayList enemiesD;
+ArrayList<Enemy> enemies;
 ArrayList<Bullet> bullets;
 ArrayList blockers;
 color FOREGROUND = color(0);
@@ -77,10 +74,7 @@ void restart()
 {
   restart = false;
   isPaused = false;
-  enemiesA = new ArrayList();
-  enemiesB = new ArrayList();
-  enemiesC = new ArrayList();
-  enemiesD = new ArrayList();
+  enemies = new ArrayList<Enemy>();
   bullets = new ArrayList<Bullet>();
   blockers = new ArrayList();
   blockers.add(new Blocker(new PVector(150, 150), 100));
@@ -117,26 +111,10 @@ void draw()
       if (millis() - questTime - pauseTime >= 5000)
       {
         questTime = millis() - pauseTime;
-        int totalEnemies = enemiesA.size() - 1 +(enemiesB.size() - 1) + (enemiesC.size() - 1) + (enemiesD.size() - 1);
-        int randomEnemy = int(random(totalEnemies + 1));
-        if (randomEnemy <= enemiesA.size() - 1)
-        {
-          EnemyA e = (EnemyA) enemiesA.get(int(random(enemiesA.size() - 1)));
-          e.partOfQuest = true;
-        } else if (randomEnemy <= enemiesA.size() - 1 + (enemiesB.size() - 1) + (enemiesC.size() - 1))
-        {
-          EnemyB e = (EnemyB) enemiesB.get(int(random(enemiesB.size() - 1)));
-          e.partOfQuest = true;
-        } else if (randomEnemy <= enemiesA.size() - 1 +(enemiesB.size() - 1) + (enemiesC.size() - 1))
-        {
-          EnemyC e = (EnemyC) enemiesC.get(int(random(enemiesC.size() - 1)));
-          e.partOfQuest = true;
-        }
-        else
-        {
-          EnemyD e = (EnemyD) enemiesD.get(int(random(enemiesD.size() - 1)));
-          e.partOfQuest = true;
-        }
+        int totalEnemies = enemies.size();
+        int randomEnemy = int(random(totalEnemies));
+        Enemy e =  enemies.get(randomEnemy);
+        e.partOfQuest = true;
       }
       fill(0);
       textAlign(LEFT, TOP);
@@ -148,58 +126,37 @@ void draw()
         Blocker b = (Blocker) blockers.get(i);
         b.show();
       }
-      if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
+      if (enemies.size() < maxEnemies)
       {
-        enemiesA.add(new EnemyA(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
-        EnemyA e = (EnemyA) enemiesA.get(enemiesA.size() - 1);
+        enemies.add(new EnemyA(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
+        Enemy e =  enemies.get(enemies.size() - 1);
+        while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+          e.loc2.set(random(mapWidth), random(mapHeight), 0);
+      }       
+      if (enemies.size() < maxEnemies)
+      {
+        enemies.add(new EnemyB(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
+        Enemy e =  enemies.get(enemies.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
           e.loc2.set(random(mapWidth), random(mapHeight), 0);
       }
-      for (int i = 0; i <= enemiesA.size() - 1; i ++)
+      if (enemies.size() < maxEnemies)
       {
-        if (!isPaused)
-        {
-          Enemy e = (Enemy) enemiesA.get(i);
-          if (e.exists)
-            e.show();
-        }
-      }        
-      if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
-      {
-        enemiesB.add(new EnemyB(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
-        EnemyB e = (EnemyB) enemiesB.get(enemiesB.size() - 1);
+        enemies.add(new EnemyC(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
+        Enemy e =  enemies.get(enemies.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
           e.loc2.set(random(mapWidth), random(mapHeight), 0);
       }
-      for (int i = 0; i <= enemiesB.size() - 1; i ++)
+      if (enemies.size() < maxEnemies)
       {
-        Enemy e = (Enemy) enemiesB.get(i);
-        if (e.exists)
-          e.show();
-      }
-      if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
-      {
-        enemiesC.add(new EnemyC(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
-        EnemyC e = (EnemyC) enemiesC.get(enemiesC.size() - 1);
+        enemies.add(new EnemyD(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
+        Enemy e = enemies.get(enemies.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
           e.loc2.set(random(mapWidth), random(mapHeight), 0);
       }
-      for (int i = 0; i <= enemiesC.size() - 1; i ++)
+      for (int i = 0; i <= enemies.size() - 1; i ++)
       {
-        Enemy e = (Enemy) enemiesC.get(i);
-        if (e.exists)
-          e.show();
-      }
-      if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
-      {
-        enemiesD.add(new EnemyD(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
-        EnemyD e = (EnemyD) enemiesD.get(enemiesD.size() - 1);
-        while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc2.set(random(mapWidth), random(mapHeight), 0);
-      }
-      for (int i = 0; i <= enemiesD.size() - 1; i ++)
-      {
-        Enemy e = (Enemy) enemiesD.get(i);
+        Enemy e = enemies.get(i);
         if (e.exists)
           e.show();
       }
@@ -222,10 +179,7 @@ void draw()
         {
           if (b.madeByPlayer)
           {
-            bulletBehavior(enemiesA, b);
-            bulletBehavior(enemiesB, b);
-            bulletBehavior(enemiesC, b);
-            bulletBehavior(enemiesD, b);
+            bulletBehavior(enemies, b);
           } else if (dist(p.loc2.x, p.loc2.y, b.loc2.x, b.loc2.y) <= p.pSize / 2 + b.bSize / 2)
           {
             b.exists = false;
@@ -238,39 +192,12 @@ void draw()
           b.show();
         }
       }
-      for (int i = 0; i <= enemiesA.size() - 1; i ++)
+      for (int i = 0; i <= enemies.size() - 1; i ++)
       {
-        Enemy e = (Enemy) enemiesA.get(i);
+        Enemy e = enemies.get(i);
         if (!e.exists)
         {
-          enemiesA.remove(i);
-          break;
-        }
-      }
-      for (int i = 0; i <= enemiesB.size() - 1; i ++)
-      {
-        Enemy e = (Enemy) enemiesB.get(i);
-        if (!e.exists)
-        {
-          enemiesB.remove(i);
-          break;
-        }
-      }
-      for (int i = 0; i <= enemiesC.size() - 1; i ++)
-      {
-        Enemy e = (Enemy) enemiesC.get(i);
-        if (!e.exists)
-        {
-          enemiesC.remove(i);
-          break;
-        }
-      }
-      for (int i = 0; i <= enemiesD.size() - 1; i ++)
-      {
-        Enemy e = (Enemy) enemiesD.get(i);
-        if (!e.exists)
-        {
-          enemiesD.remove(i);
+          enemies.remove(i);
           break;
         }
       }
