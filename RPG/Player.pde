@@ -19,29 +19,33 @@ class Player
   void show()
   {
     loc1.limit(4);
-    if (keys[0] && loc2.x >= 0)
+    for (int i = 0; i <= blockers.size() - 1; i ++)
     {
-      loc1.x -= 100;
-      loc1.limit(4);
-      loc2.add(loc1.x, loc1.y, 0);
-    }
-    if (keys[1] && loc2.x <= height)
-    {
-      loc1.x += 100;
-      loc1.limit(4);
-      loc2.add(loc1.x, loc1.y, 0);
-    }
-    if (keys[2] && loc2.y >= 0)
-    {
-      loc1.y -= 100;
-      loc1.limit(4);
-      loc2.add(loc1.x, loc1.y, 0);
-    }
-    if (keys[3] && loc2.y <= height)
-    {
-      loc1.y += 100;
-      loc1.limit(4);
-      loc2.add(loc1.x, loc1.y, 0);
+      Blocker b = (Blocker) blockers.get(i);
+      if (keys[0] && loc2.x >= 0 && dist(b.loc.x, b.loc.y, loc2.x - 4, loc2.y) > b.bSize / 2 + (pSize / 2))
+      {
+        loc1.x -= 100;
+        loc1.limit(4);
+        loc2.add(loc1.x, loc1.y, 0);
+      }
+      if (keys[1] && loc2.x <= height && dist(b.loc.x, b.loc.y, loc2.x + 4, loc2.y) > b.bSize / 2 + (pSize / 2))
+      {
+        loc1.x += 100;
+        loc1.limit(4);
+        loc2.add(loc1.x, loc1.y, 0);
+      }
+      if (keys[2] && loc2.y >= 0 && dist(b.loc.x, b.loc.y, loc2.x, loc2.y - 4) > b.bSize / 2 + (pSize / 2))
+      {
+        loc1.y -= 100;
+        loc1.limit(4);
+        loc2.add(loc1.x, loc1.y, 0);
+      }
+      if (keys[3] && loc2.y <= height && dist(b.loc.x, b.loc.y, loc2.x, loc2.y + 4) > b.bSize / 2 + (pSize / 2))
+      {
+        loc1.y += 100;
+        loc1.limit(4);
+        loc2.add(loc1.x, loc1.y, 0);
+      }
     }
     if (loc2.x > width - (pSize / 2))
       loc2.x = width - (pSize / 2);
@@ -64,3 +68,4 @@ class Player
     }
   }
 }
+

@@ -20,13 +20,32 @@ abstract class Enemy
 
   void show()
   {
+    int testsPassed = 0;
     if (millis() - moveTime - pauseTime >= moveChange)
     {
-      loc1 = PVector.random2D();
+      PVector p = PVector.random2D();
+      for (int i = 0; i <= blockers.size() - 1; i ++)
+      {
+        Blocker b = (Blocker) blockers.get(i);
+        if (dist(b.loc.x, b.loc.y, loc2.x + p.x, loc2.y + p.y) > b.bSize / 2 + (eSize / 2))
+          testsPassed ++;
+      }
+      if (testsPassed == blockers.size())
+        loc1.set(p);
       moveTime = millis() - pauseTime;
       moveChange = int(random(250, 1250));
     }
-    loc2.add(loc1);
+    testsPassed = 0;
+    for (int i = 0; i <= blockers.size() - 1; i ++)
+    {
+      Blocker b = (Blocker) blockers.get(i);
+      if (dist(b.loc.x, b.loc.y, loc2.x + loc1.x, loc2.y + loc1.y) > b.bSize / 2 + (eSize / 2))
+        testsPassed ++;
+    }
+    if (testsPassed == blockers.size())
+      loc2.add(loc1);
+    else
+      moveChange = int(0);
     if (loc2.x > width - (eSize / 2))
       loc2.x = width - (eSize / 2);
     else if (loc2.x < (eSize / 2))
