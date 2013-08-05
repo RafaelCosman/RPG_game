@@ -36,12 +36,11 @@ class Bullet
       loc1.limit(3.5);
       loc2.add(loc1.x, loc1.y, 0);
       fill(0, 255, 0);
-    }
-    else if (madeByEnemyA)
+    } else if (madeByEnemyA)
     {
       loc1.x = dist(loc2.x, 0, p.loc2.x, 0);
       loc1.y = dist(0, loc2.y, 0, p.loc2.y);
-      loc1.limit(1);
+      loc1.limit(2);
       if (loc2.x - p.loc2.x > 0)
         loc2.x -= loc1.x;
       else
@@ -52,23 +51,20 @@ class Bullet
         loc2.y += loc1.y;
       fill(255, 0, 0);
       ellipse(loc2.x, loc2.y, bSize, bSize);
-    }
-    else if (madeByEnemyB)
+    } else if (madeByEnemyB)
     {
       loc1.limit(3.5);
-      wiggleVel.limit(5);
+      wiggleVel.limit(4);
       if (millis() - wiggleChangeTime - pauseTime >= 100)
       {
-        float m = 5;
+        float m = loc1.mag();
         float a = loc1.heading2D();
         if (!hasWiggled)
         {
           hasWiggled = true;
           a += HALF_PI;
-        }
-        if (a == loc1.heading2D() + HALF_PI)
-          a -= PI;
-        if (a == loc1.heading2D() - HALF_PI)
+        } else if (a == loc1.heading2D() + HALF_PI)
+          a -= PI; else if (a == loc1.heading2D() - PI)
           a += PI;
         wiggleVel.x = m * cos(a);
         wiggleVel.y = m * sin(a);
@@ -77,8 +73,7 @@ class Bullet
       loc2.add(wiggleVel);
       loc2.add(loc1);
       fill(127.5, 0, 255);
-    }
-    else if (madeByEnemyC || madeByEnemyD)
+    } else if (madeByEnemyC || madeByEnemyD)
     {
       loc1.limit(3.5);
       loc2.add(loc1);
