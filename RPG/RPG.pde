@@ -148,16 +148,12 @@ void draw()
       text(p.hp, p.loc2.x - (width / 2), p.loc2.y - (height / 2));
       textAlign(RIGHT, TOP);
       text(p.xp, p.loc2.x + (width / 2), p.loc2.y - (height / 2));
-<<<<<<< HEAD
       for (int i = 0; i <= blockers.size() - 1; i ++)
       {
         Blocker b = (Blocker) blockers.get(i);
         b.show();
       }
-      if (millis() - eACreate - pauseTime >= 1500 * eACreateModifier && !pause)
-=======
       if (millis() - eACreate - pauseTime >= 1500 * eACreateModifier && !isPaused)
->>>>>>> 5b29729fe444900052c6bb9d049eab6281d4e91e
       {
         eACreate = millis() - pauseTime;
         eACreateModifier *= .975;
