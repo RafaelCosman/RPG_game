@@ -21,6 +21,7 @@
 Player p;
 PVector shotSpread;
 ArrayList enemiesA;
+ArrayList enemiesB;
 ArrayList enemiesC;
 ArrayList enemiesD;
 ArrayList<Bullet> bullets;
@@ -36,25 +37,18 @@ PImage mask2;
 /// instead because they're *not* final constant.
 PFont font = createFont("Arial", 32);
 boolean[] keys = new boolean[4];
-boolean shouldRestart;
-boolean isPaused;
+boolean restart;
+boolean pause;
 boolean autoFireOn = true;
+final int maxWeapons = 2;
 int mapWidth;
 int mapHeight;
-final int maxWeapons = 2;
+int maxEnemies = 100;
 int pauseTime;
 int pauseStart;
 int weapon = 1;
-int eACreate;
-/// P3 TODO: Remove totally unused variables; they pointlessly clutters your code.
-int eBCreate;
-int eCCreate;
-int eDCreate;
 int questTime;
 PVector pv = new PVector(mouseX, mouseY);
-float eACreateModifier;
-float eCCreateModifier;
-float eDCreateModifier;
 
 /// P4 TODO: Modern code style recommends not giving opening braces a line to themselves (see http://processing.org/examples/widthheight.html for an example), mostly just because people think that
 /// this way you can fit more code on your screen without making it any less readable.
@@ -79,23 +73,17 @@ void setup()
 
 void restart()
 {
-  shouldRestart = false;
-  isPaused = false;
-  eACreateModifier = 1;
-  eCCreateModifier = 1;
-  eDCreateModifier = 1;
+  restart = false;
+  pause = false;
   enemiesA = new ArrayList();
+  enemiesB = new ArrayList();
   enemiesC = new ArrayList();
   enemiesD = new ArrayList<Bullet>();
   bullets = new ArrayList<Bullet>();
   /// P1 TODO: Think about the value and uses of pauseTime over the rest of this method. Are you sure you're doing what you want to be doing?
-  p = new Player(new PVector(width / 2, height / 2), new PVector(width / 2, height / 2), 15, millis() - pauseTime, 10000000, 10, 0, 1);
+  p = new Player(new PVector(mapWidth / 2, mapHeight / 2), new PVector(mapWidth / 2, mapHeight / 2), 15, millis() - pauseTime, 10000000, 10, 0, 1);
   pauseTime = 0;
   pauseStart = 0;
-  eACreate = millis() - pauseTime;
-  eBCreate = millis() - pauseTime;
-  eCCreate = millis() - pauseTime;
-  eDCreate = millis() - pauseTime;
   questTime = millis() - pauseTime;
 }
 
@@ -105,13 +93,15 @@ void draw()
   /// P2 TODO: Really long blocks of code should be avoided because the logic is less clear to the reader - I try to wrap my mind around what is supposed to happen if restart is false and I can't because
   /// it's literally everything else in draw. (a block is a set of lines between braces, in this case the ... of the "if (!restart) {...}")
   /// Can you think of a way of accomplishing the same effect without wrapping so much code into this if statement? (Hint: you can exit a method with the "return" statement.)
-  if (!shouldRestart)
+  if (!restart)
   {
-    if (!isPaused)
+    if (!pause)
     {
       background(127.5);
       fill(127.5);
+      stroke(255);
       rect(mapWidth / 2, mapHeight / 2, mapWidth, mapHeight);
+      noStroke();
       p.show();
       camera(p.loc2.x, p.loc2.y, (height / 2) / tan(PI * 30 / 180), p.loc2.x, p.loc2.y, 0, 0, 1, 0);
       PVector loc1 = new PVector(100, 100);
@@ -123,13 +113,19 @@ void draw()
       if (millis() - questTime - pauseTime >= 5000)
       {
         questTime = millis() - pauseTime;
-        int totalEnemies = enemiesA.size() - 1 + (enemiesC.size() - 1) + (enemiesD.size() - 1);
+        int totalEnemies = enemiesA.size() - 1 +(enemiesB.size() - 1) + (enemiesC.size() - 1) + (enemiesD.size() - 1);
         int randomEnemy = int(random(totalEnemies + 1));
         if (randomEnemy <= enemiesA.size() - 1)
         {
           EnemyA e = (EnemyA) enemiesA.get(int(random(enemiesA.size() - 1)));
           e.partOfQuest = true;
-        } else if (randomEnemy <= enemiesA.size() - 1 + (enemiesC.size() - 1))
+        }
+        else if (randomEnemy <= enemiesA.size() - 1 + (enemiesB.size() - 1) + (enemiesC.size() - 1))
+        {
+          EnemyB e = (EnemyB) enemiesB.get(int(random(enemiesB.size() - 1)));
+          e.partOfQuest = true;
+        }
+        else if (randomEnemy <= enemiesA.size() - 1 +(enemiesB.size() - 1) + (enemiesC.size() - 1))
         {
           EnemyC e = (EnemyC) enemiesC.get(int(random(enemiesC.size() - 1)));
           e.partOfQuest = true;
@@ -145,54 +141,64 @@ void draw()
       text(p.hp, p.loc2.x - (width / 2), p.loc2.y - (height / 2));
       textAlign(RIGHT, TOP);
       text(p.xp, p.loc2.x + (width / 2), p.loc2.y - (height / 2));
-      if (millis() - eACreate - pauseTime >= 1500 * eACreateModifier && !isPaused)
+      if (enemiesA.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
       {
-        eACreate = millis() - pauseTime;
-        eACreateModifier *= .975;
-        enemiesA.add(new EnemyA(new PVector(0, 0), new PVector(random(width), random(height)), millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime));
+        enemiesA.add(new EnemyA(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
         EnemyA e = (EnemyA) enemiesA.get(enemiesA.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc2.set(random(width), random(height), 0);
+          e.loc2.set(random(mapWidth), random(mapHeight), 0);
       }
       for (int i = 0; i <= enemiesA.size() - 1; i ++)
       {
-        if (!isPaused)
+        if (!pause)
         {
           Enemy e = (Enemy) enemiesA.get(i);
           if (e.exists)
             e.show();
         }
       }
-      if (millis() - eCCreate - pauseTime >= 1500 * eCCreateModifier && !paused)
+      if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
       {
-        eCCreate = millis() - pauseTime;
-        eCCreateModifier *= .975;
-        enemiesC.add(new EnemyC(new PVector(0, 0), new PVector(random(width), random(height)), millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime));
+        enemiesB.add(new EnemyB(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
+        EnemyB e = (EnemyB) enemiesB.get(enemiesB.size() - 1);
+        while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+          e.loc2.set(random(mapWidth), random(mapHeight), 0);
+      }
+      for (int i = 0; i <= enemiesB.size() - 1; i ++)
+      {
+        if (!pause)
+        {
+          Enemy e = (Enemy) enemiesB.get(i);
+          if (e.exists)
+            e.show();
+        }
+      }
+      if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
+      {
+        enemiesC.add(new EnemyC(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
         EnemyC e = (EnemyC) enemiesC.get(enemiesC.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc2.set(random(width), random(height), 0);
+          e.loc2.set(random(mapWidth), random(mapHeight), 0);
       }
       for (int i = 0; i <= enemiesC.size() - 1; i ++)
       {
-        if (!isPaused)
+        if (!pause)
         {
           Enemy e = (Enemy) enemiesC.get(i);
           if (e.exists)
             e.show();
         }
       }
-      if (millis() - eDCreate - pauseTime >= 2750 * eDCreateModifier && !paused)
+      if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
       {
-        eDCreate = millis() - pauseTime;
-        eDCreateModifier *= .975;
-        enemiesD.add(new EnemyD(new PVector(0, 0), new PVector(random(width), random(height)), millis() - pauseTime, int(random(250, 1000)), millis() - pauseTime));
+        enemiesD.add(new EnemyD(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
         EnemyD e = (EnemyD) enemiesD.get(enemiesD.size() - 1);
         while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc2.set(random(width), random(height), 0);
+          e.loc2.set(random(mapWidth), random(mapHeight), 0);
       }
       for (int i = 0; i <= enemiesD.size() - 1; i ++)
       {
-        if (!isPaused)
+        if (!pause)
         {
           Enemy e = (Enemy) enemiesD.get(i);
           if (e.exists)
@@ -203,12 +209,12 @@ void draw()
       {
         if (weapon == 1 && millis() - p.shootTime - pauseTime >= 250)
         {
-          bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), 5, -1, -1, 6, 250, 3.5, true, false, false, false, true, false));
+          bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), new PVector(), 5, -1, -1, 6, 250, -1, -1, 3.5, true, false, false, false, false, true, false, false));
           p.shootTime = millis() - pauseTime;
         }
         if (weapon == 2 && millis() - p.shootTime - pauseTime >= 150)
         {
-          bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), 5, -1, -1, 4, 225, 3.5, true, false, false, false, true, true));
+          bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), new PVector(), 5, -1, -1, 4, 225, -1, -1, 3.5, true, false, false, false, false, true, true, false));
           p.shootTime = millis() - pauseTime;
         }
       }
@@ -219,14 +225,16 @@ void draw()
           if (b.madeByPlayer)
           {
             bulletBehavior(enemiesA, b);
+            bulletBehavior(enemiesB, b);
             bulletBehavior(enemiesC, b);
             bulletBehavior(enemiesD, b);
-          } else if (dist(p.loc2.x, p.loc2.y, b.loc2.x, b.loc2.y) <= p.pSize / 2 + b.bSize / 2)
+          } 
+          else if (dist(p.loc2.x, p.loc2.y, b.loc2.x, b.loc2.y) <= p.pSize / 2 + b.bSize / 2)
           {
             b.exists = false;
             p.hp -= b.damage;
             if (p.hp <= 0)
-              shouldRestart = true;
+              restart = true;
           }
           if ((dist(b.loc2.x, b.loc2.y, b.shootLoc.x, b.shootLoc.y) >= b.range && b.range != -1) || (millis() - b.surviveTimeCurrent - pauseTime >= b.surviveTimeDeadline && b.surviveTimeDeadline != -1))
             b.exists = false;
@@ -239,6 +247,15 @@ void draw()
         if (!e.exists)
         {
           enemiesA.remove(i);
+          break;
+        }
+      }
+      for (int i = 0; i <= enemiesB.size() - 1; i ++)
+      {
+        Enemy e = (Enemy) enemiesB.get(i);
+        if (!e.exists)
+        {
+          enemiesB.remove(i);
           break;
         }
       }
@@ -272,7 +289,7 @@ void keyPressed()
     restart();
   if (key == 'p')
   {
-    isPaused = !isPaused;
+    pause = !pause;
     pauseStart = millis() - pauseTime;
   }
   if (key == 'f')

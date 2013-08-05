@@ -27,12 +27,12 @@ abstract class Enemy
       moveChange = int(random(250, 1250));
     }
     loc2.add(loc1);
-    if (loc2.x > width - (eSize / 2))
-      loc2.x = width - (eSize / 2);
+    if (loc2.x > mapWidth - (eSize / 2))
+      loc2.x = mapWidth - (eSize / 2);
     else if (loc2.x < (eSize / 2))
       loc2.x = (eSize / 2);
-    if (loc2.y > height - (eSize / 2))
-      loc2.y = height - (eSize / 2);
+    if (loc2.y > mapHeight - (eSize / 2))
+      loc2.y = mapHeight - (eSize / 2);
     else if (loc2.y < (eSize / 2))
       loc2.y = (eSize / 2);
     if (partOfQuest)

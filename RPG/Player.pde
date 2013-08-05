@@ -19,36 +19,38 @@ class Player
   void show()
   {
     loc1.limit(4);
-    if (keys[0] && loc2.x >= -width * 2.5)
+    if (keys[0] && loc2.x >= 0)
     {
       loc1.x -= 100;
       loc1.limit(4);
       loc2.add(loc1.x, loc1.y, 0);
     }
-    if (keys[1] && loc2.x <= width * 2.5)
+    if (keys[1] && loc2.x <= mapWidth)
     {
       loc1.x += 100;
       loc1.limit(4);
       loc2.add(loc1.x, loc1.y, 0);
     }
-    if (keys[2] && loc2.y >= -height * 2.5)
+    if (keys[2] && loc2.y >= 0)
     {
       loc1.y -= 100;
       loc1.limit(4);
       loc2.add(loc1.x, loc1.y, 0);
     }
-    if (keys[3] && loc2.y <= height * 2.5)
+    if (keys[3] && loc2.y <= mapHeight)
     {
       loc1.y += 100;
       loc1.limit(4);
       loc2.add(loc1.x, loc1.y, 0);
     }
-    if (loc2.x > mapWidth / 2 - (pSize / 2))
-      loc2.x = mapWidth / 2 - (pSize / 2); else if (loc2.x < mapWidth / 2 + (pSize / 2))
-      loc2.x = mapWidth / 2;
-    if (loc2.y > mapHeight / 2 - (pSize / 2))
-      loc2.y = mapHeight / 2 - (pSize / 2); else if (loc2.y < mapHeight / 2 + (pSize / 2))
-      loc2.y = mapHeight / 2;
+    if (loc2.x > mapWidth - (pSize / 2))
+      loc2.x = mapWidth - (pSize / 2);
+    else if (loc2.x < (pSize / 2))
+      loc2.x = (pSize / 2);
+    if (loc2.y > mapHeight - (pSize / 2))
+      loc2.y = mapHeight - (pSize / 2);
+    else if (loc2.y < (pSize / 2))
+      loc2.y = (pSize / 2);
     fill(0, 255, 0);
     ellipse(loc2.x, loc2.y, pSize, pSize);
     for (int i = level; i <= level + 1; i ++)
@@ -62,4 +64,3 @@ class Player
     }
   }
 }
-
