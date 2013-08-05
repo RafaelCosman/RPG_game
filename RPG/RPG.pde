@@ -37,9 +37,11 @@ PImage mask2;
 /// instead because they're *not* final constant.
 PFont font = createFont("Arial", 32);
 boolean[] keys = new boolean[4];
-boolean restart;
-boolean pause;
+boolean shouldRestart;
+boolean isPaused;
 boolean autoFireOn = true;
+int mapWidth;
+int mapHeight;
 final int maxWeapons = 2;
 int pauseTime;
 int pauseStart;
@@ -52,7 +54,6 @@ int eDCreate;
 int questTime;
 PVector pv = new PVector(mouseX, mouseY);
 float eACreateModifier;
-float eBCreateModifier;
 float eCCreateModifier;
 float eDCreateModifier;
 
@@ -60,12 +61,14 @@ float eDCreateModifier;
 /// this way you can fit more code on your screen without making it any less readable.
 void setup()
 {
-  size(550, 550, P3D);
+  size(displayWidth, displayHeight, P3D);
   smooth();
   noStroke();
   strokeWeight(3);
   rectMode(CENTER);
   imageMode(CENTER);
+  mapWidth = width * 5;
+  mapHeight = height * 5;
   shotSpread = new PVector();
   img1 = loadImage("Steel Shortsword (Real).png");
   mask1 = loadImage("Steel Shortsword (Mask).jpg");
@@ -77,10 +80,9 @@ void setup()
 
 void restart()
 {
-  restart = false;
-  pause = false;
+  shouldRestart = false;
+  isPaused = false;
   eACreateModifier = 1;
-  eBCreateModifier = 1;
   eCCreateModifier = 1;
   eDCreateModifier = 1;
   enemiesA = new ArrayList();
@@ -106,13 +108,13 @@ void draw()
   /// P2 TODO: Really long blocks of code should be avoided because the logic is less clear to the reader - I try to wrap my mind around what is supposed to happen if restart is false and I can't because
   /// it's literally everything else in draw. (a block is a set of lines between braces, in this case the ... of the "if (!restart) {...}")
   /// Can you think of a way of accomplishing the same effect without wrapping so much code into this if statement? (Hint: you can exit a method with the "return" statement.)
-  if (!restart)
+  if (!shouldRestart)
   {
-    if (!pause)
+    if (!isPaused)
     {
       background(127.5);
       fill(127.5);
-      rect(width / 2, height / 2, width, height);
+      rect(mapWidth / 2, mapHeight / 2, mapWidth, mapHeight);
       p.show();
       camera(p.loc2.x, p.loc2.y, (height / 2) / tan(PI * 30 / 180), p.loc2.x, p.loc2.y, 0, 0, 1, 0);
       PVector loc1 = new PVector(100, 100);
@@ -130,8 +132,7 @@ void draw()
         {
           EnemyA e = (EnemyA) enemiesA.get(int(random(enemiesA.size() - 1)));
           e.partOfQuest = true;
-        }
-        else if (randomEnemy <= enemiesA.size() - 1 + (enemiesC.size() - 1))
+        } else if (randomEnemy <= enemiesA.size() - 1 + (enemiesC.size() - 1))
         {
           EnemyC e = (EnemyC) enemiesC.get(int(random(enemiesC.size() - 1)));
           e.partOfQuest = true;
@@ -147,12 +148,16 @@ void draw()
       text(p.hp, p.loc2.x - (width / 2), p.loc2.y - (height / 2));
       textAlign(RIGHT, TOP);
       text(p.xp, p.loc2.x + (width / 2), p.loc2.y - (height / 2));
+<<<<<<< HEAD
       for (int i = 0; i <= blockers.size() - 1; i ++)
       {
         Blocker b = (Blocker) blockers.get(i);
         b.show();
       }
       if (millis() - eACreate - pauseTime >= 1500 * eACreateModifier && !pause)
+=======
+      if (millis() - eACreate - pauseTime >= 1500 * eACreateModifier && !isPaused)
+>>>>>>> 5b29729fe444900052c6bb9d049eab6281d4e91e
       {
         eACreate = millis() - pauseTime;
         eACreateModifier *= .975;
@@ -163,14 +168,14 @@ void draw()
       }
       for (int i = 0; i <= enemiesA.size() - 1; i ++)
       {
-        if (!pause)
+        if (!isPaused)
         {
           Enemy e = (Enemy) enemiesA.get(i);
           if (e.exists)
             e.show();
         }
       }
-      if (millis() - eCCreate - pauseTime >= 1500 * eCCreateModifier && !pause)
+      if (millis() - eCCreate - pauseTime >= 1500 * eCCreateModifier && !paused)
       {
         eCCreate = millis() - pauseTime;
         eCCreateModifier *= .975;
@@ -181,14 +186,14 @@ void draw()
       }
       for (int i = 0; i <= enemiesC.size() - 1; i ++)
       {
-        if (!pause)
+        if (!isPaused)
         {
           Enemy e = (Enemy) enemiesC.get(i);
           if (e.exists)
             e.show();
         }
       }
-      if (millis() - eDCreate - pauseTime >= 2750 * eDCreateModifier && !pause)
+      if (millis() - eDCreate - pauseTime >= 2750 * eDCreateModifier && !paused)
       {
         eDCreate = millis() - pauseTime;
         eDCreateModifier *= .975;
@@ -199,7 +204,7 @@ void draw()
       }
       for (int i = 0; i <= enemiesD.size() - 1; i ++)
       {
-        if (!pause)
+        if (!isPaused)
         {
           Enemy e = (Enemy) enemiesD.get(i);
           if (e.exists)
@@ -228,13 +233,12 @@ void draw()
             bulletBehavior(enemiesA, b);
             bulletBehavior(enemiesC, b);
             bulletBehavior(enemiesD, b);
-          }
-          else if (dist(p.loc2.x, p.loc2.y, b.loc2.x, b.loc2.y) <= p.pSize / 2 + b.bSize / 2)
+          } else if (dist(p.loc2.x, p.loc2.y, b.loc2.x, b.loc2.y) <= p.pSize / 2 + b.bSize / 2)
           {
             b.exists = false;
             p.hp -= b.damage;
             if (p.hp <= 0)
-              restart = true;
+              shouldRestart = true;
           }
           if ((dist(b.loc2.x, b.loc2.y, b.shootLoc.x, b.shootLoc.y) >= b.range && b.range != -1) || (millis() - b.surviveTimeCurrent - pauseTime >= b.surviveTimeDeadline && b.surviveTimeDeadline != -1))
             b.exists = false;
@@ -280,7 +284,7 @@ void keyPressed()
     restart();
   if (key == 'p')
   {
-    pause = !pause;
+    isPaused = !isPaused;
     pauseStart = millis() - pauseTime;
   }
   if (key == 'f')
