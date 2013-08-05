@@ -18,7 +18,7 @@ class EnemyB extends Enemy
     if (millis() - shootTime - pauseTime >= 1750)
     {
       shotSpread.set(p.loc2.x - loc2.x, p.loc2.y - loc2.y, 0);
-      bullets.add(new Bullet(new PVector(loc2.x, loc2.y), new PVector(shotSpread.x, shotSpread.y), new PVector(loc2.x, loc2.y), new PVector(), 5, millis() - pauseTime, -1, 2, 275, 10, millis() - pauseTime, 4.0, false, false, true, false, true, true, true, false));
+      bullets.add(new Bullet(new PVector(loc2.x, loc2.y), new PVector(shotSpread.x, shotSpread.y), new PVector(loc2.x, loc2.y), new PVector(), 5, millis() - pauseTime, -1, 2, 275, 10, millis() - pauseTime, 0, 4.0, false, false, true, false, true, true, true));
       /*
       float m = shotSpread.mag();
        float a = shotSpread.heading2D();

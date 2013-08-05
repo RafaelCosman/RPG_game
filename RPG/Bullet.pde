@@ -1,11 +1,11 @@
 class Bullet
 {
   PVector shootLoc, loc1, loc2, wiggleVel;
-  int bSize, surviveTimeCurrent, surviveTimeDeadline, damage, range, wiggleAmount, wiggleChangeTime;
+  int bSize, surviveTimeCurrent, surviveTimeDeadline, damage, range, wiggleAmount, wiggleChangeTime, wiggleState;
   float speed;
-  boolean madeByPlayer, madeByEnemyA, madeByEnemyB, madeByEnemyC, madeByEnemyD, exists, piercing, hasWiggled;
+  boolean madeByPlayer, madeByEnemyA, madeByEnemyB, madeByEnemyC, madeByEnemyD, exists, piercing;
 
-  Bullet(PVector shootLoc, PVector loc1, PVector loc2, PVector wiggleVel, int bSize, int surviveTimeCurrent, int surviveTimeDeadline, int damage, int range, int wiggleAmount, int wiggleChangeTime, float speed, boolean madeByPlayer, boolean madeByEnemyA, boolean madeByEnemyB, boolean madeByEnemyC, boolean madeByEnemyD, boolean exists, boolean piercing, boolean hasWiggled)
+  Bullet(PVector shootLoc, PVector loc1, PVector loc2, PVector wiggleVel, int bSize, int surviveTimeCurrent, int surviveTimeDeadline, int damage, int range, int wiggleAmount, int wiggleChangeTime, int wiggleState, float speed, boolean madeByPlayer, boolean madeByEnemyA, boolean madeByEnemyB, boolean madeByEnemyC, boolean madeByEnemyD, boolean exists, boolean piercing)
   {
     this.shootLoc = shootLoc;
     this.loc1 = loc1;
@@ -18,6 +18,7 @@ class Bullet
     this.range = range;
     this.wiggleAmount = wiggleAmount;
     this.wiggleChangeTime = wiggleChangeTime;
+    this.wiggleState = wiggleState;
     this.speed = speed;
     this.madeByPlayer = madeByPlayer;
     this.madeByEnemyA = madeByEnemyA;
@@ -26,7 +27,6 @@ class Bullet
     this.madeByEnemyD = madeByEnemyD;
     this.exists = exists;
     this.piercing = piercing;
-    this.hasWiggled = hasWiggled;
   }
 
   void show()
@@ -54,18 +54,23 @@ class Bullet
     } else if (madeByEnemyB)
     {
       loc1.limit(3.5);
-      wiggleVel.limit(4);
       if (millis() - wiggleChangeTime - pauseTime >= 100)
       {
-        float m = loc1.mag();
+        float m = 5;
         float a = loc1.heading2D();
-        if (!hasWiggled)
+        if (wiggleState == 0)
         {
-          hasWiggled = true;
           a += HALF_PI;
-        } else if (a == loc1.heading2D() + HALF_PI)
-          a -= PI; else if (a == loc1.heading2D() - PI)
+          wiggleState ++;
+        } else if (wiggleState == 1)
+        {
+          a -= PI;
+          wiggleState ++;
+        } else if (wiggleState == 2)
+        {
           a += PI;
+          wiggleState = 1;
+        }
         wiggleVel.x = m * cos(a);
         wiggleVel.y = m * sin(a);
         wiggleChangeTime = millis() - pauseTime;

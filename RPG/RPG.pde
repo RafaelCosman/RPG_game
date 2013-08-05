@@ -148,7 +148,7 @@ void draw()
         Blocker b = (Blocker) blockers.get(i);
         b.show();
       }
-      if (enemiesA.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
+      if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
       {
         enemiesA.add(new EnemyA(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
         EnemyA e = (EnemyA) enemiesA.get(enemiesA.size() - 1);
@@ -207,12 +207,12 @@ void draw()
       {
         if (weapon == 1 && millis() - p.shootTime - pauseTime >= 250)
         {
-          bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), new PVector(), 5, -1, -1, 6, 250, -1, -1, 3.5, true, false, false, false, false, true, false, false));
+          bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), new PVector(), 5, -1, -1, 6, 250, -1, -1, -1, 3.5, true, false, false, false, false, true, false));
           p.shootTime = millis() - pauseTime;
         }
         if (weapon == 2 && millis() - p.shootTime - pauseTime >= 150)
         {
-          bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), new PVector(), 5, -1, -1, 4, 225, -1, -1, 3.5, true, false, false, false, false, true, true, false));
+          bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), new PVector(), 5, -1, -1, 4, 225, -1, -1, -1, 3.5, true, false, false, false, false, true, true));
           p.shootTime = millis() - pauseTime;
         }
       }
