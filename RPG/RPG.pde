@@ -39,7 +39,7 @@ PImage mask2;
 PFont font = createFont("Arial", 32);
 boolean[] keys = new boolean[4];
 boolean restart;
-boolean pause;
+boolean isPaused;
 boolean autoFireOn = true;
 final int maxWeapons = 2;
 int mapWidth;
@@ -61,6 +61,7 @@ void setup()
   strokeWeight(3);
   rectMode(CENTER);
   imageMode(CENTER);
+  maxEnemies = 75;
   mapWidth = width * 5;
   mapHeight = height * 5;
   shotSpread = new PVector();
@@ -75,7 +76,7 @@ void setup()
 void restart()
 {
   restart = false;
-  pause = false;
+  isPaused = false;
   enemiesA = new ArrayList();
   enemiesB = new ArrayList();
   enemiesC = new ArrayList();
@@ -84,7 +85,7 @@ void restart()
   blockers = new ArrayList();
   blockers.add(new Blocker(new PVector(150, 150), 100));
   /// P1 TODO: Think about the value and uses of pauseTime over the rest of this method. Are you sure you're doing what you want to be doing?
-  p = new Player(new PVector(mapWidth / 2, mapHeight / 2), new PVector(mapWidth / 2, mapHeight / 2), 15, millis() - pauseTime, 10000000, 10, 0, 1);
+  p = new Player(new PVector(mapWidth / 2, mapHeight / 2), new PVector(mapWidth / 2, mapHeight / 2), 15, millis() - pauseTime, 10, 10, 0, 1);
   pauseTime = 0;
   pauseStart = 0;
   questTime = millis() - pauseTime;
@@ -98,7 +99,7 @@ void draw()
   /// Can you think of a way of accomplishing the same effect without wrapping so much code into this if statement? (Hint: you can exit a method with the "return" statement.)
   if (!restart)
   {
-    if (!pause)
+    if (!isPaused)
     {
       background(127.5);
       fill(127.5);
@@ -122,13 +123,11 @@ void draw()
         {
           EnemyA e = (EnemyA) enemiesA.get(int(random(enemiesA.size() - 1)));
           e.partOfQuest = true;
-        }
-        else if (randomEnemy <= enemiesA.size() - 1 + (enemiesB.size() - 1) + (enemiesC.size() - 1))
+        } else if (randomEnemy <= enemiesA.size() - 1 + (enemiesB.size() - 1) + (enemiesC.size() - 1))
         {
           EnemyB e = (EnemyB) enemiesB.get(int(random(enemiesB.size() - 1)));
           e.partOfQuest = true;
-        }
-        else if (randomEnemy <= enemiesA.size() - 1 +(enemiesB.size() - 1) + (enemiesC.size() - 1))
+        } else if (randomEnemy <= enemiesA.size() - 1 +(enemiesB.size() - 1) + (enemiesC.size() - 1))
         {
           EnemyC e = (EnemyC) enemiesC.get(int(random(enemiesC.size() - 1)));
           e.partOfQuest = true;
@@ -158,13 +157,13 @@ void draw()
       }
       for (int i = 0; i <= enemiesA.size() - 1; i ++)
       {
-        if (!pause)
+        if (!isPaused)
         {
           Enemy e = (Enemy) enemiesA.get(i);
           if (e.exists)
             e.show();
         }
-      }
+      }        
       if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
       {
         enemiesB.add(new EnemyB(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
@@ -174,12 +173,9 @@ void draw()
       }
       for (int i = 0; i <= enemiesB.size() - 1; i ++)
       {
-        if (!pause)
-        {
-          Enemy e = (Enemy) enemiesB.get(i);
-          if (e.exists)
-            e.show();
-        }
+        Enemy e = (Enemy) enemiesB.get(i);
+        if (e.exists)
+          e.show();
       }
       if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
       {
@@ -190,12 +186,9 @@ void draw()
       }
       for (int i = 0; i <= enemiesC.size() - 1; i ++)
       {
-        if (!pause)
-        {
-          Enemy e = (Enemy) enemiesC.get(i);
-          if (e.exists)
-            e.show();
-        }
+        Enemy e = (Enemy) enemiesC.get(i);
+        if (e.exists)
+          e.show();
       }
       if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
       {
@@ -206,12 +199,9 @@ void draw()
       }
       for (int i = 0; i <= enemiesD.size() - 1; i ++)
       {
-        if (!pause)
-        {
-          Enemy e = (Enemy) enemiesD.get(i);
-          if (e.exists)
-            e.show();
-        }
+        Enemy e = (Enemy) enemiesD.get(i);
+        if (e.exists)
+          e.show();
       }
       if ((mousePressed || autoFireOn))
       {
@@ -236,8 +226,7 @@ void draw()
             bulletBehavior(enemiesB, b);
             bulletBehavior(enemiesC, b);
             bulletBehavior(enemiesD, b);
-          } 
-          else if (dist(p.loc2.x, p.loc2.y, b.loc2.x, b.loc2.y) <= p.pSize / 2 + b.bSize / 2)
+          } else if (dist(p.loc2.x, p.loc2.y, b.loc2.x, b.loc2.y) <= p.pSize / 2 + b.bSize / 2)
           {
             b.exists = false;
             p.hp -= b.damage;
@@ -297,7 +286,7 @@ void keyPressed()
     restart();
   if (key == 'p')
   {
-    pause = !pause;
+    isPaused = !isPaused;
     pauseStart = millis() - pauseTime;
   }
   if (key == 'f')

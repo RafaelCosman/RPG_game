@@ -47,12 +47,10 @@ abstract class Enemy
     else
       moveChange = int(0);
     if (loc2.x > mapWidth - (eSize / 2))
-      loc2.x = mapWidth - (eSize / 2);
-    else if (loc2.x < (eSize / 2))
+      loc2.x = mapWidth - (eSize / 2); else if (loc2.x < (eSize / 2))
       loc2.x = (eSize / 2);
     if (loc2.y > mapHeight - (eSize / 2))
-      loc2.y = mapHeight - (eSize / 2);
-    else if (loc2.y < (eSize / 2))
+      loc2.y = mapHeight - (eSize / 2); else if (loc2.y < (eSize / 2))
       loc2.y = (eSize / 2);
     if (partOfQuest)
       stroke(255);

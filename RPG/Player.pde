@@ -48,12 +48,10 @@ class Player
       }
     }
     if (loc2.x > mapWidth - (pSize / 2))
-      loc2.x = mapWidth - (pSize / 2);
-    else if (loc2.x < (pSize / 2))
+      loc2.x = mapWidth - (pSize / 2); else if (loc2.x < (pSize / 2))
       loc2.x = (pSize / 2);
     if (loc2.y > mapHeight - (pSize / 2))
-      loc2.y = mapHeight - (pSize / 2);
-    else if (loc2.y < (pSize / 2))
+      loc2.y = mapHeight - (pSize / 2); else if (loc2.y < (pSize / 2))
       loc2.y = (pSize / 2);
     fill(0, 255, 0);
     ellipse(loc2.x, loc2.y, pSize, pSize);
@@ -68,3 +66,4 @@ class Player
     }
   }
 }
+
