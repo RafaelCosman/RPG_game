@@ -25,6 +25,7 @@ ArrayList enemiesB;
 ArrayList enemiesC;
 ArrayList enemiesD;
 ArrayList<Bullet> bullets;
+ArrayList blockers;
 color FOREGROUND = color(0);
 color BACKGROUND = color(255);
 PImage img1;
@@ -78,8 +79,10 @@ void restart()
   enemiesA = new ArrayList();
   enemiesB = new ArrayList();
   enemiesC = new ArrayList();
-  enemiesD = new ArrayList<Bullet>();
+  enemiesD = new ArrayList();
   bullets = new ArrayList<Bullet>();
+  blockers = new ArrayList();
+  blockers.add(new Blocker(new PVector(150, 150), 100));
   /// P1 TODO: Think about the value and uses of pauseTime over the rest of this method. Are you sure you're doing what you want to be doing?
   p = new Player(new PVector(mapWidth / 2, mapHeight / 2), new PVector(mapWidth / 2, mapHeight / 2), 15, millis() - pauseTime, 10000000, 10, 0, 1);
   pauseTime = 0;
@@ -141,6 +144,11 @@ void draw()
       text(p.hp, p.loc2.x - (width / 2), p.loc2.y - (height / 2));
       textAlign(RIGHT, TOP);
       text(p.xp, p.loc2.x + (width / 2), p.loc2.y - (height / 2));
+      for (int i = 0; i <= blockers.size() - 1; i ++)
+      {
+        Blocker b = (Blocker) blockers.get(i);
+        b.show();
+      }
       if (enemiesA.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
       {
         enemiesA.add(new EnemyA(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
