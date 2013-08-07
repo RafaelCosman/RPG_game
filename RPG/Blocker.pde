@@ -12,7 +12,7 @@ class Blocker
   void show()
   {
     fill(0);
-    ellipse(loc.x, loc.y, bulletSize, bulletSize);
+    ellipse(loc, bulletSize, bulletSize);
   }
 }
 

@@ -131,34 +131,30 @@ void draw()
         Blocker b = (Blocker) blockers.get(i);
         b.show();
       }
+      
       if (enemies.size() < maxEnemies)
       {
-        enemies.add(new EnemyA(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
-        Enemy e =  enemies.get(enemies.size() - 1);
+        Enemy e = new EnemyA(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
         while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc.set(random(mapWidth), random(mapHeight), 0);
+          e.loc = randomLocation();
+        enemies.add(e);
+        
+        Enemy e = new EnemyB(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
+        while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+          e.loc = randomLocation();
+        enemies.add(e);
+        
+        Enemy e = new EnemyC(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
+        while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+          e.loc = randomLocation();
+        enemies.add(e);
+        
+        Enemy e = new EnemyD(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
+        while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+          e.loc = randomLocation();
+        enemies.add(e);
       }       
-      if (enemies.size() < maxEnemies)
-      {
-        enemies.add(new EnemyB(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
-        Enemy e =  enemies.get(enemies.size() - 1);
-        while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc.set(random(mapWidth), random(mapHeight), 0);
-      }
-      if (enemies.size() < maxEnemies)
-      {
-        enemies.add(new EnemyC(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
-        Enemy e =  enemies.get(enemies.size() - 1);
-        while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc.set(random(mapWidth), random(mapHeight), 0);
-      }
-      if (enemies.size() < maxEnemies)
-      {
-        enemies.add(new EnemyD(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
-        Enemy e = enemies.get(enemies.size() - 1);
-        while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc.set(random(mapWidth), random(mapHeight), 0);
-      }
+      
       /*if (enemies.size() < maxEnemies)
        {
        enemies.add(new EnemyE(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
@@ -241,8 +237,9 @@ void keyPressed()
     else
       p.hp ++;
   }
-  if (key == 'x')
+  if (key == 'x') //this is a cheat
     p.xp += 1;
+    
   if (key == 'a')
     keys[0] = true;
   if (key == 'd')

@@ -12,7 +12,7 @@ class StraightBullet extends Bullet
   {
     if (madeByPlayer)
       fill(0, 255, 0);
-    else
+    else //enemy bullets
       fill(0, 255, 255);
       
     super.show();

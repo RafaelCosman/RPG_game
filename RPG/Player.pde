@@ -21,14 +21,16 @@ class Player
   void show()
   {
     PVector p = new PVector();
+    
+    int SPEED = 100;
     if (keys[0])
-      p.x -= 100;
+      p.x -= SPEED;
     if (keys[1])
-      p.x += 100;
+      p.x += SPEED;
     if (keys[2])
-      p.y -= 100;
+      p.y -= SPEED;
     if (keys[3])
-      p.y += 100;
+      p.y += SPEED;
       
     p.limit(speed);
     int testsPassed = 0;
