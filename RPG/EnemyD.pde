@@ -18,31 +18,31 @@ class EnemyD extends Enemy
     if (millis() - shootTime - pauseTime >= 1500)
     {
       shotSpread.set(p.loc.x - loc.x, p.loc.y - loc.y, 0);
-      bullets.add(new StraightBullet(new PVector(loc.x, loc.y), new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
+      bullets.add(new StraightBullet(new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
       float m = shotSpread.mag();
       float a = shotSpread.heading2D();
       a += .5;
       shotSpread.x = m * cos(a);
       shotSpread.y = m * sin(a);
-      bullets.add(new StraightBullet(new PVector(loc.x, loc.y), new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
+      bullets.add(new StraightBullet(new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
       m = shotSpread.mag();
       a = shotSpread.heading2D();
       a += .5;
       shotSpread.x = m * cos(a);
       shotSpread.y = m * sin(a);
-      bullets.add(new StraightBullet(new PVector(loc.x, loc.y), new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
+      bullets.add(new StraightBullet(new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
       m = shotSpread.mag();
       a = shotSpread.heading2D();
       a -= 1.5;
       shotSpread.x = m * cos(a);
       shotSpread.y = m * sin(a);
-      bullets.add(new StraightBullet(new PVector(loc.x, loc.y), new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
+      bullets.add(new StraightBullet(new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
       m = shotSpread.mag();
       a = shotSpread.heading2D();
       a -= .5;
       shotSpread.x = m * cos(a);
       shotSpread.y = m * sin(a);
-      bullets.add(new StraightBullet(new PVector(loc.x, loc.y), new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
+      bullets.add(new StraightBullet(new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
       shootTime = millis() - pauseTime;
     }
   }

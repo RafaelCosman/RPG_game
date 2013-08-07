@@ -17,7 +17,7 @@ class EnemyC extends Enemy
     super.show();
     if (millis() - shootTime - pauseTime >= 1350)
     {
-      bullets.add(new StraightBullet(new PVector(loc.x, loc.y), new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
+      bullets.add(new StraightBullet(new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
       shootTime = millis() - pauseTime;
     }
   }

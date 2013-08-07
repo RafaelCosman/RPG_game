@@ -18,21 +18,21 @@ class EnemyB extends Enemy
     if (millis() - shootTime - pauseTime >= 1750)
     {
       shotSpread.set(p.loc.x - loc.x, p.loc.y - loc.y, 0);
-      bullets.add(new WigglyBullet(new PVector(loc.x, loc.y), new PVector(), new PVector(), new PVector(loc.x, loc.y), 5, 2, 300, 10, 100, PI, 4.5, false, true, true));
       float m = shotSpread.mag();
       float a = shotSpread.heading2D();
+      fireGivenHeadingAndMag(a, m);
       a += .75;
-      shotSpread.x = m * cos(a);
-      shotSpread.y = m * sin(a);
-      bullets.add(new WigglyBullet(new PVector(loc.x, loc.y), new PVector(), new PVector(), new PVector(loc.x, loc.y), 5, 2, 300, 10, 100, PI, 4.5, false, true, true));
-      m = shotSpread.mag();
-      a = shotSpread.heading2D();
+      fireGivenHeadingAndMag(a, m);
       a -= 1.5;
-      shotSpread.x = m * cos(a);
-      shotSpread.y = m * sin(a);
-      bullets.add(new WigglyBullet(new PVector(loc.x, loc.y), new PVector(), new PVector(), new PVector(loc.x, loc.y), 5, 2, 300, 10, 100, PI, 4.5, false, true, true));
+      fireGivenHeadingAndMag(a, m);
       shootTime = millis() - pauseTime;
     }
+  }
+
+  void fireGivenHeadingAndMag(float a, float m) 
+  {
+    PVector vel = new PVector(m * cos(a), m * sin(a));
+    bullets.add(new WigglyBullet(new PVector(), vel, copy(loc), 5, 2, 300, 10, 100, PI, 4.5, false, true, true));
   }
 }
 
