@@ -67,10 +67,12 @@ void setup()
   mapWidth = width * 5;
   mapHeight = height * 5;
   shotSpread = new PVector();
+
   img1 = loadImage("Steel Shortsword (Real).png");
   mask1 = loadImage("Steel Shortsword (Mask).jpg");
   img2 = loadImage("Steel Shortsword (Real).png");
   mask2 = loadImage("Steel Shortsword (Mask).jpg");
+
   textFont(font);
   restart();
 }
@@ -79,8 +81,10 @@ void restart()
 {
   restart = false;
   isPaused = false;
+
   enemies = new ArrayList<Enemy>();
   bullets = new ArrayList<Bullet>();
+
   blockers = new ArrayList();
   for (int i = 0; i <= 250; i ++)
     blockers.add(new Blocker(new PVector(random(mapWidth), random(mapHeight)), 100));
@@ -93,7 +97,7 @@ void restart()
 
 void draw()
 {
-  pv.set(mouseX, mouseY, 0);
+  pv.set(mouseX, mouseY);
   /// P2 TODO: Really long blocks of code should be avoided because the logic is less clear to the reader - I try to wrap my mind around what is supposed to happen if restart is false and I can't because
   /// it's literally everything else in draw. (a block is a set of lines between braces, in this case the ... of the "if (!restart) {...}")
   /// Can you think of a way of accomplishing the same effect without wrapping so much code into this if statement? (Hint: you can exit a method with the "return" statement.)
@@ -101,15 +105,12 @@ void draw()
   {
     if (!isPaused)
     {
-      background(127.5);
-      
-      
       fill(127.5);
-      stroke(255);
+      stroke(255, 100);
       rect(mapWidth / 2, mapHeight / 2, mapWidth, mapHeight);
-      
+
       drawGrid();
-      
+
       noStroke();
       p.show();
       camera(p.loc.x, p.loc.y, (height / 2) / tan(PI * 30 / 180), p.loc.x, p.loc.y, 0, 0, 1, 0);
@@ -119,26 +120,16 @@ void draw()
       image(img2, loc);
       PVector offset = PVector.sub(loc, vel);
       println(collisionDetection(offset));
+
       if (millis() - questTime - pauseTime >= 5000)
-      {
-        questTime = millis() - pauseTime;
-        int totalEnemies = enemies.size();
-        int randomEnemy = int(random(totalEnemies));
-        Enemy e =  enemies.get(randomEnemy);
-        e.partOfQuest = true;
-      }
-      
+        createQuest();
+
       showUI();
-      
-      for (int i = 0; i <= blockers.size() - 1; i ++)
-      {
-        Blocker b = (Blocker) blockers.get(i);
-        b.show();
-      }
-      
+      showBlockers();
+
       if (enemies.size() < maxEnemies)
         makeEnemies();
-      
+
       /*if (enemies.size() < maxEnemies)
        {
        enemies.add(new EnemyE(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
@@ -146,34 +137,20 @@ void draw()
        while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
        e.loc.set(random(mapWidth), random(mapHeight), 0);
        }*/
+
       for (int i = 0; i <= enemies.size() - 1; i ++)
       {
         Enemy e = enemies.get(i);
         if (e.exists)
           e.show();
       }
+
       if ((mousePressed || autoFireOn))
         fireWeapon();
-        
-      for (int i = 0; i <= enemies.size() - 1; i ++)
-      {
-        Enemy e = enemies.get(i);
-        if (!e.exists)
-        {
-          enemies.remove(i);
-          break;
-        }
-      }
-      for (int i = 0; i <= bullets.size() - 1; i ++)
-      {
-        Bullet b = bullets.get(i);
-        if (!b.exists)
-        {
-          bullets.remove(i);
-          break;
-        }
-      }
-      
+
+      cleanUpEnemiesList();
+      cleanUpBulletsList();
+
       for (Bullet b : bullets)
       {
         b.show();
@@ -211,7 +188,7 @@ void keyPressed()
   }
   if (key == 'x') //this is a cheat
     p.xp += 1;
-    
+
   if (key == 'a')
     keys[0] = true;
   if (key == 'd')
@@ -270,12 +247,12 @@ void drawGrid()
   int LINE_SPACE_HORISONTAL = 100, LINE_SPACE_VERTICAL = 100;
   int MIN_X = -10000, MIN_Y = -10000;
   int MAX_X = 10000, MAX_Y = 10000;
-  
-  fill(0);
-  for(int i=MIN_X; i<MAX_X; i+=LINE_SPACE_HORISONTAL)
-    line(i,MIN_Y,i,MAX_Y);
-  for(int w=MIN_Y; w<MAX_Y; w+=LINE_SPACE_VERTICAL)
-    line(MIN_X,w,MAX_X,w);
+
+  fill(0, 0);
+  for (int i=MIN_X; i<MAX_X; i+=LINE_SPACE_HORISONTAL)
+    line(i, MIN_Y, i, MAX_Y);
+  for (int w=MIN_Y; w<MAX_Y; w+=LINE_SPACE_VERTICAL)
+    line(MIN_X, w, MAX_X, w);
 }
 
 void makeEnemies()
@@ -284,17 +261,17 @@ void makeEnemies()
   while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
     e.loc = randomLocation();
   enemies.add(e);
-  
+
   e = new EnemyB(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
   while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
     e.loc = randomLocation();
   enemies.add(e);
-  
+
   e = new EnemyC(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
   while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
     e.loc = randomLocation();
   enemies.add(e);
-  
+
   e = new EnemyD(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
   while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
     e.loc = randomLocation();
@@ -316,3 +293,48 @@ void fireWeapon()
     p.shootTime = millis() - pauseTime;
   }
 }
+
+void showBlockers()
+{
+  for (int i = 0; i <= blockers.size() - 1; i ++)
+  {
+    Blocker b = (Blocker) blockers.get(i);
+    b.show();
+  }
+}
+
+void createQuest()
+{
+  questTime = millis() - pauseTime;
+  int totalEnemies = enemies.size();
+  int randomEnemy = int(random(totalEnemies));
+  Enemy e =  enemies.get(randomEnemy);
+  e.partOfQuest = true;
+}
+
+void cleanUpEnemiesList()
+{
+  for (int i = 0; i <= enemies.size() - 1; i ++)
+  {
+    Enemy e = enemies.get(i);
+    if (!e.exists)
+    {
+      enemies.remove(i);
+      break;
+    }
+  }
+}
+
+void cleanUpBulletsList()
+{
+  for (int i = 0; i <= bullets.size() - 1; i ++)
+  {
+    Bullet b = bullets.get(i);
+    if (!b.exists)
+    {
+      bullets.remove(i);
+      break;
+    }
+  }
+}
+
