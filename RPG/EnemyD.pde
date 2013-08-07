@@ -16,7 +16,7 @@ class EnemyD extends Enemy
     if (millis() - shootTime - pauseTime >= 1500)
       makeBullet();
   }
-  
+
   void makeBullet()
   {
     bullets.add(new StraightBullet(new PVector(), copy(loc), 5, 4, 275, 4.5, false, false));
