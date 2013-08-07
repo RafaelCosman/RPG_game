@@ -4,7 +4,7 @@ abstract class Enemy
   int eSize, moveTime, moveChange, shootTime, hp, value;
   boolean partOfQuest, exists;
 
-  Enemy(PVector vel, PVector loc, int eSize, int moveTime, int moveChange, int shootTime, int hp, int value, boolean partOfQuest, boolean exists)
+  Enemy(PVector vel, PVector loc, int eSize, int moveTime, int moveChange, int shootTime, int hp, int value)
   {
     this.vel = vel;
     this.loc = loc;
@@ -14,10 +14,13 @@ abstract class Enemy
     this.shootTime = shootTime;
     this.hp = hp;
     this.value = value;
-    this.partOfQuest = partOfQuest;
-    this.exists = exists;
+    this.partOfQuest = false;
+    this.exists = true;
   }
 
+  /*
+  TODO:Break enemy show method into show and run
+  */
   void show()
   {
     int testsPassed = 0;
@@ -54,6 +57,7 @@ abstract class Enemy
       loc.y = (eSize / 2);
     if (partOfQuest)
       stroke(255);
+      
     ellipse(loc.x, loc.y, eSize, eSize);
     noStroke();
   }

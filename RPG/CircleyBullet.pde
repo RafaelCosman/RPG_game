@@ -1,13 +1,11 @@
 class CircleyBullet extends Bullet
 {
-  PVector shootLoc;
   int range;
   float rotateAmount;
 
-  CircleyBullet(PVector shootLoc, PVector vel, PVector loc, int bulletSize, int damage, int range, float rotateAmount, float speed, boolean madeByPlayer, boolean piercing)
+  CircleyBullet(PVector vel, PVector loc, int bulletSize, int damage, int range, float rotateAmount, float speed, boolean madeByPlayer, boolean piercing)
   {
     super(vel, loc, bulletSize, damage, speed, madeByPlayer, piercing);
-    this.shootLoc = shootLoc;
     this.range = range;
     this.rotateAmount = rotateAmount;
   }

@@ -23,12 +23,15 @@ PVector shotSpread;
 ArrayList<Enemy> enemies;
 ArrayList<Bullet> bullets;
 ArrayList<Blocker> blockers;
+
 color FOREGROUND = color(0);
 color BACKGROUND = color(255);
+
 PImage img1;
 PImage mask1;
 PImage img2;
 PImage mask2;
+
 /// P3 TODO: By convention, global variables that are set once up here and never changed should be labeled "final" and should have their name in ALL_CAPS (with underscores separating words if there are more than one). 
 /// If you follow this convention, then a reader knows that whenever they see an ALL_CAPS variable, if they want to figure out the value of the variable they can just look at the top and not have to worry about 
 /// scanning your whole code for places it may have changed. Note that in order for this convention to be useful you need to use it consistently, so I changed the "HP" (and "XP") fields in Enemy and Player to "hp" 
@@ -40,6 +43,7 @@ boolean restart;
 boolean isPaused;
 boolean autoFireOn = true;
 final int maxWeapons = 2;
+
 int mapWidth;
 int mapHeight;
 int maxEnemies = 100;
@@ -98,9 +102,14 @@ void draw()
     if (!isPaused)
     {
       background(127.5);
+      
+      
       fill(127.5);
       stroke(255);
       rect(mapWidth / 2, mapHeight / 2, mapWidth, mapHeight);
+      
+      drawGrid();
+      
       noStroke();
       p.show();
       camera(p.loc.x, p.loc.y, (height / 2) / tan(PI * 30 / 180), p.loc.x, p.loc.y, 0, 0, 1, 0);
@@ -118,14 +127,9 @@ void draw()
         Enemy e =  enemies.get(randomEnemy);
         e.partOfQuest = true;
       }
-      fill(0);
-      textAlign(LEFT, TOP);
-      text("HP:", p.loc.x - (width / 2), p.loc.y - (height / 2));
-      text("" + p.hp + " / " + p.maxHP, p.loc.x - (width / 2), p.loc.y - (height / 2) + fontSize);
-      textAlign(RIGHT, TOP);
-      text("XP:", p.loc.x + (width / 2), p.loc.y - (height / 2));
-      text("" + p.xp + " / " + p.level, p.loc.x + (width / 2), p.loc.y - (height / 2) + fontSize);
-      text("Level: " + p.level, p.loc.x + (width / 2), p.loc.y - (height / 2) + 64);
+      
+      showUI();
+      
       for (int i = 0; i <= blockers.size() - 1; i ++)
       {
         Blocker b = (Blocker) blockers.get(i);
@@ -133,27 +137,7 @@ void draw()
       }
       
       if (enemies.size() < maxEnemies)
-      {
-        Enemy e = new EnemyA(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
-        while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc = randomLocation();
-        enemies.add(e);
-        
-        Enemy e = new EnemyB(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
-        while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc = randomLocation();
-        enemies.add(e);
-        
-        Enemy e = new EnemyC(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
-        while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc = randomLocation();
-        enemies.add(e);
-        
-        Enemy e = new EnemyD(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
-        while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc = randomLocation();
-        enemies.add(e);
-      }       
+        makeEnemies();
       
       /*if (enemies.size() < maxEnemies)
        {
@@ -169,20 +153,8 @@ void draw()
           e.show();
       }
       if ((mousePressed || autoFireOn))
-      {
-        PVector bulletVel = new PVector(p.loc.x - mouseX, p.loc.y - mouseY);
-        int timeSinceLastShot = millis() - p.shootTime - pauseTime;
-        if (weapon == 1 && timeSinceLastShot >= 250)
-        {
-          bullets.add(new StraightBullet(bulletVel, copy(p.loc), 5, 4, 250, 4.5, true, false));
-          p.shootTime = millis() - pauseTime;
-        }
-        if (weapon == 2 && timeSinceLastShot >= 175)
-        {
-          bullets.add(new StraightBullet(bulletVel, copy(p.loc), 5, 2, 225, 5, true, true));
-          p.shootTime = millis() - pauseTime;
-        }
-      }
+        fireWeapon();
+        
       for (int i = 0; i <= enemies.size() - 1; i ++)
       {
         Enemy e = enemies.get(i);
@@ -293,3 +265,54 @@ boolean collisionDetection(PVector offset)
   return false;
 }
 
+void drawGrid()
+{
+  int LINE_SPACE_HORISONTAL = 100, LINE_SPACE_VERTICAL = 100;
+  int MIN_X = -10000, MIN_Y = -10000;
+  int MAX_X = 10000, MAX_Y = 10000;
+  
+  fill(0);
+  for(int i=MIN_X; i<MAX_X; i+=LINE_SPACE_HORISONTAL)
+    line(i,MIN_Y,i,MAX_Y);
+  for(int w=MIN_Y; w<MAX_Y; w+=LINE_SPACE_VERTICAL)
+    line(MIN_X,w,MAX_X,w);
+}
+
+void makeEnemies()
+{
+  Enemy e = new EnemyA(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
+  while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+    e.loc = randomLocation();
+  enemies.add(e);
+  
+  e = new EnemyB(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
+  while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+    e.loc = randomLocation();
+  enemies.add(e);
+  
+  e = new EnemyC(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
+  while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+    e.loc = randomLocation();
+  enemies.add(e);
+  
+  e = new EnemyD(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime);
+  while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+    e.loc = randomLocation();
+  enemies.add(e);
+}
+
+void fireWeapon()
+{
+  PVector bulletVel = new PVector(p.loc.x - mouseX, p.loc.y - mouseY);
+  int timeSinceLastShot = millis() - p.shootTime - pauseTime;
+  if (weapon == 1 && timeSinceLastShot >= 250)
+  {
+    bullets.add(new StraightBullet(bulletVel, copy(p.loc), 5, 4, 250, 4.5, true, false));
+    p.shootTime = millis() - pauseTime;
+  }
+  if (weapon == 2 && timeSinceLastShot >= 175)
+  {
+    bullets.add(new StraightBullet(bulletVel, copy(p.loc), 5, 2, 225, 5, true, true));
+    p.shootTime = millis() - pauseTime;
+  }
+}
