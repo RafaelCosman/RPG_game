@@ -22,7 +22,7 @@ Player p;
 PVector shotSpread;
 ArrayList<Enemy> enemies;
 ArrayList<Bullet> bullets;
-ArrayList<Blocker> blockers;
+ArrayList blockers;
 color FOREGROUND = color(0);
 color BACKGROUND = color(255);
 PImage img1;
@@ -176,12 +176,12 @@ void draw()
       {
         if (weapon == 1 && millis() - p.shootTime - pauseTime >= 250)
         {
-          bullets.add(new StraightBullet(new PVector(p.loc.x, p.loc.y), new PVector(p.loc.x - mouseX, p.loc.y - mouseY), new PVector(p.loc.x, p.loc.y), 5, 4, 250, 4.5, true, false));
+          bullets.add(new StraightBullet(new PVector(p.loc.x, p.loc.y), new PVector(), new PVector(p.loc.x, p.loc.y), 5, 4, 250, 4.5, true, true, false));
           p.shootTime = millis() - pauseTime;
         }
         if (weapon == 2 && millis() - p.shootTime - pauseTime >= 175)
         {
-          bullets.add(new StraightBullet(new PVector(p.loc.x, p.loc.y), new PVector(), new PVector(p.loc.x, p.loc.y), 5, 2, 225, 5, true, true));
+          bullets.add(new StraightBullet(new PVector(p.loc.x, p.loc.y), new PVector(), new PVector(p.loc.x, p.loc.y), 5, 2, 225, 5, true, true, true));
           p.shootTime = millis() - pauseTime;
         }
       }

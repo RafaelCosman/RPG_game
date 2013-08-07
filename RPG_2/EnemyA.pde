@@ -1,4 +1,4 @@
-class EnemyC extends Enemy
+class EnemyA extends Enemy
 {
   final static int E_SIZE = 25;
   final static int INITIAL_HP = 15;
@@ -6,18 +6,18 @@ class EnemyC extends Enemy
   final static boolean PART_OF_QUEST = false;
   final static boolean EXISTS = true;
 
-  EnemyC(PVector vel, PVector loc, int moveTime, int moveChange, int shootTime)
+  EnemyA(PVector vel, PVector loc, int moveTime, int moveChange, int shootTime)
   {
     super(vel, loc, E_SIZE, moveTime, moveChange, shootTime, INITIAL_HP, INITIAL_XP_VALUE, PART_OF_QUEST, EXISTS);
   }
 
   void show()
   {
-    fill(255, 0, 255);
+    fill(255, 255, 0);
     super.show();
-    if (millis() - shootTime - pauseTime >= 1350)
+    if (millis() - shootTime - pauseTime >= 1500)
     {
-      bullets.add(new StraightBullet(new PVector(loc.x, loc.y), new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
+      bullets.add(new FollowBullet(new PVector(), new PVector(loc.x, loc.y), 5, 2, 4.75, millis() - pauseTime, 5000, false, true, false));
       shootTime = millis() - pauseTime;
     }
   }

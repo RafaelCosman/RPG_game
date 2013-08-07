@@ -29,7 +29,6 @@ class Player
       p.y -= 100;
     if (keys[3])
       p.y += 100;
-      
     p.limit(speed);
     int testsPassed = 0;
     for (int i = 0; i <= blockers.size() - 1; i ++)
@@ -38,18 +37,15 @@ class Player
       if (dist(b.loc.x, b.loc.y, loc.x + p.x, loc.y + p.y) > b.bulletSize / 2 + (pSize / 2))
         testsPassed ++;
     }
-    
     if (testsPassed == blockers.size())
       vel.set(p);
     testsPassed = 0;
-    
     for (int i = 0; i <= blockers.size() - 1; i ++)
     {
       Blocker b = (Blocker) blockers.get(i);
       if (dist(b.loc.x, b.loc.y, loc.x + vel.x, loc.y + vel.y) > b.bulletSize / 2 + (pSize / 2))
         testsPassed ++;
     }
-    
     if (testsPassed == blockers.size())
       loc.add(vel);
     if (loc.x > mapWidth - (pSize / 2))
@@ -58,10 +54,8 @@ class Player
     if (loc.y > mapHeight - (pSize / 2))
       loc.y = mapHeight - (pSize / 2); else if (loc.y < (pSize / 2))
       loc.y = (pSize / 2);
-      
     fill(0, 255, 0);
     ellipse(loc.x, loc.y, pSize, pSize);
-    
     for (int i = level; i <= level + 1; i ++)
     {
       if (xp >= i)
