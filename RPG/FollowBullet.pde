@@ -15,6 +15,7 @@ class FollowBullet extends Bullet
       fill(0, 255, 0);
     else
       fill(255, 0, 0);
+      
     super.show();
   }
 

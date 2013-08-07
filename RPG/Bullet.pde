@@ -12,7 +12,7 @@ abstract class Bullet
 
   Bullet(PVector vel, PVector loc, int bulletSize, int damage, float speed, boolean madeByPlayer, boolean piercing)
   {
-    this.vel = new PVector();
+    this.vel = vel;
     this.loc = loc;
     this.bulletSize = bulletSize;
     this.damage = damage;
@@ -20,11 +20,6 @@ abstract class Bullet
     this.madeByPlayer = madeByPlayer;
     this.exists = true;
     this.piercing = piercing;
-  }
-
-  void setVel(PVector vel)
-  {
-    this.vel = vel;
   }
 
   void show()
@@ -59,6 +54,7 @@ abstract class Bullet
         }
       }
     }
+    
     loc.add(vel);
   }
 }

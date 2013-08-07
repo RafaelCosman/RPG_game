@@ -18,6 +18,7 @@ class CircleyBullet extends Bullet
       fill(0, 255, 0);
     else
       fill(0, 127.5, 127.5);
+      
     super.show();
   }
 

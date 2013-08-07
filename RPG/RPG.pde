@@ -174,14 +174,16 @@ void draw()
       }
       if ((mousePressed || autoFireOn))
       {
-        if (weapon == 1 && millis() - p.shootTime - pauseTime >= 250)
+        PVector bulletVel = new PVector(p.loc.x - mouseX, p.loc.y - mouseY);
+        int timeSinceLastShot = millis() - p.shootTime - pauseTime;
+        if (weapon == 1 && timeSinceLastShot >= 250)
         {
-          bullets.add(new StraightBullet(new PVector(p.loc.x - mouseX, p.loc.y - mouseY), copy(p.loc), 5, 4, 250, 4.5, true, false));
+          bullets.add(new StraightBullet(bulletVel, copy(p.loc), 5, 4, 250, 4.5, true, false));
           p.shootTime = millis() - pauseTime;
         }
-        if (weapon == 2 && millis() - p.shootTime - pauseTime >= 175)
+        if (weapon == 2 && timeSinceLastShot >= 175)
         {
-          bullets.add(new StraightBullet(new PVector(p.loc.x - mouseX, p.loc.y - mouseY), copy(p.loc), 5, 2, 225, 5, true, true));
+          bullets.add(new StraightBullet(bulletVel, copy(p.loc), 5, 2, 225, 5, true, true));
           p.shootTime = millis() - pauseTime;
         }
       }
