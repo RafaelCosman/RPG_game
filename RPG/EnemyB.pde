@@ -30,7 +30,7 @@ class EnemyB extends Enemy
   void fireGivenHeadingAndMag(float a, float m) 
   {
     PVector vel = new PVector(m * cos(a), m * sin(a));
-    bullets.add(new WigglyBullet(new PVector(), vel, copy(loc), 5, 2, 300, 10, 100, PI, 4.5, false, true, true));
+    bullets.add(new WigglyBullet(vel, copy(loc), 5, 2, 300, 10, 100, PI, 4.5, false, true, true));
   }
 }
 

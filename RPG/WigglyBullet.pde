@@ -5,11 +5,11 @@ class WigglyBullet extends Bullet
   float rotateAmount;
   boolean hasWiggled;
 
-  WigglyBullet(PVector wiggleVel, PVector vel, PVector loc, int bulletSize, int damage, int range, int wiggleAmount, int wiggleChangeTime, float rotateAmount, float speed, boolean madeByPlayer, boolean exists, boolean piercing)
+  WigglyBullet(PVector vel, PVector loc, int bulletSize, int damage, int range, int wiggleAmount, int wiggleChangeTime, float rotateAmount, float speed, boolean madeByPlayer, boolean exists, boolean piercing)
   {
     super(vel, loc, bulletSize, damage, speed, madeByPlayer, piercing);
     
-    this.wiggleVel = wiggleVel;
+    this.wiggleVel = new PVector();
     this.wiggleAmount = wiggleAmount;
     this.wiggleChangeTime = wiggleChangeTime;
     this.rotateAmount = rotateAmount;
@@ -50,6 +50,7 @@ class WigglyBullet extends Bullet
       }
       wiggleChangeTime = millis() - pauseTime;
     }
+    
     loc.add(wiggleVel);
   }
 }

@@ -14,35 +14,12 @@ class EnemyD extends Enemy
     fill(0, 0, 255);
     super.show();
     if (millis() - shootTime - pauseTime >= 1500)
-    {
-      shotSpread.set(p.loc.x - loc.x, p.loc.y - loc.y, 0);
-      bullets.add(new StraightBullet(new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
-      float m = shotSpread.mag();
-      float a = shotSpread.heading2D();
-      a += .5;
-      shotSpread.x = m * cos(a);
-      shotSpread.y = m * sin(a);
-      bullets.add(new StraightBullet(new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
-      m = shotSpread.mag();
-      a = shotSpread.heading2D();
-      a += .5;
-      shotSpread.x = m * cos(a);
-      shotSpread.y = m * sin(a);
-      bullets.add(new StraightBullet(new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
-      m = shotSpread.mag();
-      a = shotSpread.heading2D();
-      a -= 1.5;
-      shotSpread.x = m * cos(a);
-      shotSpread.y = m * sin(a);
-      bullets.add(new StraightBullet(new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
-      m = shotSpread.mag();
-      a = shotSpread.heading2D();
-      a -= .5;
-      shotSpread.x = m * cos(a);
-      shotSpread.y = m * sin(a);
-      bullets.add(new StraightBullet(new PVector(), new PVector(loc.x, loc.y), 5, 4, 275, 4.5, false, false));
-      shootTime = millis() - pauseTime;
-    }
+      makeBullet();
+  }
+  
+  void makeBullet()
+  {
+    bullets.add(new StraightBullet(new PVector(), copy(loc), 5, 4, 275, 4.5, false, false));
   }
 }
 
