@@ -20,11 +20,9 @@
 
 Player p;
 PVector shotSpread;
-ArrayList enemiesA;
-ArrayList enemiesB;
-ArrayList enemiesC;
-ArrayList enemiesD;
+ArrayList<Enemy> enemies;
 ArrayList<Bullet> bullets;
+ArrayList<Blocker> blockers;
 color FOREGROUND = color(0);
 color BACKGROUND = color(255);
 PImage img1;
@@ -44,11 +42,11 @@ final int maxWeapons = 2;
 int mapWidth;
 int mapHeight;
 int maxEnemies = 100;
-int pauseTime;
-int pauseStart;
 int weapon = 1;
 int questTime;
 PVector pv = new PVector(mouseX, mouseY);
+
+final color PLAYER_BULLET_COLOR = color(0, 255, 0);
 
 /// P4 TODO: Modern code style recommends not giving opening braces a line to themselves (see http://processing.org/examples/widthheight.html for an example), mostly just because people think that
 /// this way you can fit more code on your screen without making it any less readable.
@@ -75,16 +73,14 @@ void restart()
 {
   restart = false;
   pause = false;
-  enemiesA = new ArrayList();
-  enemiesB = new ArrayList();
-  enemiesC = new ArrayList();
-  enemiesD = new ArrayList<Bullet>();
   bullets = new ArrayList<Bullet>();
+  enemies = new ArrayList<Enemy>();
+  blockers = new ArrayList();
+  for (int i = 0; i <= 200; i ++)
+    blockers.add(new Blocker(new PVector(random(mapWidth), random(mapHeight)), 100));
   /// P1 TODO: Think about the value and uses of pauseTime over the rest of this method. Are you sure you're doing what you want to be doing?
-  p = new Player(new PVector(mapWidth / 2, mapHeight / 2), new PVector(mapWidth / 2, mapHeight / 2), 15, millis() - pauseTime, 10000000, 10, 0, 1);
-  pauseTime = 0;
-  pauseStart = 0;
-  questTime = millis() - pauseTime;
+  p = new Player(new PVector(mapWidth / 2, mapHeight / 2));
+  questTime = 0;
 }
 
 void draw()
@@ -93,193 +89,122 @@ void draw()
   /// P2 TODO: Really long blocks of code should be avoided because the logic is less clear to the reader - I try to wrap my mind around what is supposed to happen if restart is false and I can't because
   /// it's literally everything else in draw. (a block is a set of lines between braces, in this case the ... of the "if (!restart) {...}")
   /// Can you think of a way of accomplishing the same effect without wrapping so much code into this if statement? (Hint: you can exit a method with the "return" statement.)
-  if (!restart)
+  background(127.5);
+  if (!pause)
   {
-    if (!pause)
+    fill(127.5);
+    stroke(255);
+    rect(mapWidth / 2, mapHeight / 2, mapWidth, mapHeight);
+    noStroke();
+    p.run();
+    p.show();
+    camera(p.loc.x, p.loc.y, (height / 2) / tan(PI * 30 / 180), p.loc.x, p.loc.y, 0, 0, 1, 0);
+    PVector vel = new PVector(100, 100);
+    PVector loc = new PVector(mouseX, mouseY);
+    image(img1, vel);
+    image(img2, loc);
+    PVector offset = PVector.sub(loc, vel);
+    println(collisionDetection(offset));
+    if (questTime >= 200)
     {
-      background(127.5);
-      fill(127.5);
-      stroke(255);
-      rect(mapWidth / 2, mapHeight / 2, mapWidth, mapHeight);
-      noStroke();
-      p.show();
-      camera(p.loc2.x, p.loc2.y, (height / 2) / tan(PI * 30 / 180), p.loc2.x, p.loc2.y, 0, 0, 1, 0);
-      PVector loc1 = new PVector(100, 100);
-      PVector loc2 = new PVector(mouseX, mouseY);
-      image(img1, loc1);
-      image(img2, loc2);
-      PVector offset = PVector.sub(loc2, loc1);
-      println(collisionDetection(offset));
-      if (millis() - questTime - pauseTime >= 5000)
+      Enemy e = enemies.get(int(random(enemies.size())));
+      e.partOfQuest = true;
+      questTime = 0;
+    }
+    fill(0);
+    textAlign(LEFT, TOP);
+    text(p.hp, p.loc.x - (width / 2), p.loc.y - (height / 2));
+    textAlign(RIGHT, TOP);
+    text(p.xp, p.loc.x + (width / 2), p.loc.y - (height / 2));
+    for (Blocker b : blockers)
+    {
+      b.run();
+      b.show();
+    }
+    if (enemies.size() < maxEnemies)
+    {
+      enemies.add(new EnemyA(new PVector(random(mapWidth), random(mapHeight)), int(random(25, 125))));
+      Enemy e = (Enemy) enemies.get(enemies.size() - 1);
+      while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+        e.loc.set(random(mapWidth), random(mapHeight), 0);
+    }
+    if (enemies.size() < maxEnemies)
+    {
+      enemies.add(new EnemyB(new PVector(random(mapWidth), random(mapHeight)), int(random(25, 125))));
+      Enemy e = (Enemy) enemies.get(enemies.size() - 1);
+      while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+        e.loc.set(random(mapWidth), random(mapHeight), 0);
+    }
+    if (enemies.size() < maxEnemies)
+    {
+      enemies.add(new EnemyC(new PVector(random(mapWidth), random(mapHeight)), int(random(25, 125))));
+      Enemy e = (Enemy) enemies.get(enemies.size() - 1);
+      while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+        e.loc.set(random(mapWidth), random(mapHeight), 0);
+    }
+    if (enemies.size() < maxEnemies)
+    {
+      enemies.add(new EnemyD(new PVector(random(mapWidth), random(mapHeight)), int(random(25, 125))));
+      Enemy e = (Enemy) enemies.get(enemies.size() - 1);
+      while (dist (e.loc.x, e.loc.y, p.loc.x, p.loc.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
+        e.loc.set(random(mapWidth), random(mapHeight), 0);
+    }
+    for (Enemy e : enemies)
+    {
+      if (e.exists)
       {
-        questTime = millis() - pauseTime;
-        int totalEnemies = enemiesA.size() - 1 +(enemiesB.size() - 1) + (enemiesC.size() - 1) + (enemiesD.size() - 1);
-        int randomEnemy = int(random(totalEnemies + 1));
-        if (randomEnemy <= enemiesA.size() - 1)
-        {
-          EnemyA e = (EnemyA) enemiesA.get(int(random(enemiesA.size() - 1)));
-          e.partOfQuest = true;
-        }
-        else if (randomEnemy <= enemiesA.size() - 1 + (enemiesB.size() - 1) + (enemiesC.size() - 1))
-        {
-          EnemyB e = (EnemyB) enemiesB.get(int(random(enemiesB.size() - 1)));
-          e.partOfQuest = true;
-        }
-        else if (randomEnemy <= enemiesA.size() - 1 +(enemiesB.size() - 1) + (enemiesC.size() - 1))
-        {
-          EnemyC e = (EnemyC) enemiesC.get(int(random(enemiesC.size() - 1)));
-          e.partOfQuest = true;
-        }
-        else
-        {
-          EnemyD e = (EnemyD) enemiesD.get(int(random(enemiesD.size() - 1)));
-          e.partOfQuest = true;
-        }
+        e.run();
+        e.show();
       }
-      fill(0);
-      textAlign(LEFT, TOP);
-      text(p.hp, p.loc2.x - (width / 2), p.loc2.y - (height / 2));
-      textAlign(RIGHT, TOP);
-      text(p.xp, p.loc2.x + (width / 2), p.loc2.y - (height / 2));
-      if (enemiesA.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
+    }
+    for (Bullet b : bullets)
+    {
+      if (b.exists)
       {
-        enemiesA.add(new EnemyA(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
-        EnemyA e = (EnemyA) enemiesA.get(enemiesA.size() - 1);
-        while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc2.set(random(mapWidth), random(mapHeight), 0);
-      }
-      for (int i = 0; i <= enemiesA.size() - 1; i ++)
-      {
-        if (!pause)
+        if (b.madeByPlayer)
         {
-          Enemy e = (Enemy) enemiesA.get(i);
-          if (e.exists)
-            e.show();
+          bulletBehavior(b);
         }
-      }
-      if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
-      {
-        enemiesB.add(new EnemyB(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
-        EnemyB e = (EnemyB) enemiesB.get(enemiesB.size() - 1);
-        while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc2.set(random(mapWidth), random(mapHeight), 0);
-      }
-      for (int i = 0; i <= enemiesB.size() - 1; i ++)
-      {
-        if (!pause)
+        else if (dist(p.loc.x, p.loc.y, b.loc.x, b.loc.y) <= p.pSize / 2 + b.bSize / 2)
         {
-          Enemy e = (Enemy) enemiesB.get(i);
-          if (e.exists)
-            e.show();
+          b.exists = false;
+          p.hp -= b.damage;
+          if (p.hp <= 0)
+            restart = true;
         }
-      }
-      if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
-      {
-        enemiesC.add(new EnemyC(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
-        EnemyC e = (EnemyC) enemiesC.get(enemiesC.size() - 1);
-        while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc2.set(random(mapWidth), random(mapHeight), 0);
-      }
-      for (int i = 0; i <= enemiesC.size() - 1; i ++)
-      {
-        if (!pause)
-        {
-          Enemy e = (Enemy) enemiesC.get(i);
-          if (e.exists)
-            e.show();
-        }
-      }
-      if (enemiesA.size() + enemiesB.size() + enemiesC.size() + enemiesD.size() < maxEnemies)
-      {
-        enemiesD.add(new EnemyD(new PVector(0, 0), new PVector(random(mapWidth), random(mapHeight)), millis() - pauseTime, int(random(250, 2500)), millis() - pauseTime));
-        EnemyD e = (EnemyD) enemiesD.get(enemiesD.size() - 1);
-        while (dist (e.loc2.x, e.loc2.y, p.loc2.x, p.loc2.y) < 250 + (p.pSize / 2) + (e.eSize / 2))
-          e.loc2.set(random(mapWidth), random(mapHeight), 0);
-      }
-      for (int i = 0; i <= enemiesD.size() - 1; i ++)
-      {
-        if (!pause)
-        {
-          Enemy e = (Enemy) enemiesD.get(i);
-          if (e.exists)
-            e.show();
-        }
-      }
-      if ((mousePressed || autoFireOn))
-      {
-        if (weapon == 1 && millis() - p.shootTime - pauseTime >= 250)
-        {
-          bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), new PVector(), 5, -1, -1, 6, 250, -1, -1, 3.5, true, false, false, false, false, true, false, false));
-          p.shootTime = millis() - pauseTime;
-        }
-        if (weapon == 2 && millis() - p.shootTime - pauseTime >= 150)
-        {
-          bullets.add(new Bullet(new PVector(p.loc2.x, p.loc2.y), new PVector(mouseX - (width / 2), mouseY - (height / 2)), new PVector(p.loc2.x, p.loc2.y), new PVector(), 5, -1, -1, 4, 225, -1, -1, 3.5, true, false, false, false, false, true, true, false));
-          p.shootTime = millis() - pauseTime;
-        }
-      }
-      for (Bullet b : bullets)
-      {
         if (b.exists)
         {
-          if (b.madeByPlayer)
-          {
-            bulletBehavior(enemiesA, b);
-            bulletBehavior(enemiesB, b);
-            bulletBehavior(enemiesC, b);
-            bulletBehavior(enemiesD, b);
-          } 
-          else if (dist(p.loc2.x, p.loc2.y, b.loc2.x, b.loc2.y) <= p.pSize / 2 + b.bSize / 2)
-          {
-            b.exists = false;
-            p.hp -= b.damage;
-            if (p.hp <= 0)
-              restart = true;
-          }
-          if ((dist(b.loc2.x, b.loc2.y, b.shootLoc.x, b.shootLoc.y) >= b.range && b.range != -1) || (millis() - b.surviveTimeCurrent - pauseTime >= b.surviveTimeDeadline && b.surviveTimeDeadline != -1))
-            b.exists = false;
+          b.run();
           b.show();
         }
       }
-      for (int i = 0; i <= enemiesA.size() - 1; i ++)
+    }
+    for (Bullet b : bullets)
+    {
+      if (!b.exists)
       {
-        Enemy e = (Enemy) enemiesA.get(i);
-        if (!e.exists)
-        {
-          enemiesA.remove(i);
-          break;
-        }
-      }
-      for (int i = 0; i <= enemiesB.size() - 1; i ++)
-      {
-        Enemy e = (Enemy) enemiesB.get(i);
-        if (!e.exists)
-        {
-          enemiesB.remove(i);
-          break;
-        }
-      }
-      for (int i = 0; i <= enemiesC.size() - 1; i ++)
-      {
-        Enemy e = (Enemy) enemiesC.get(i);
-        if (!e.exists)
-        {
-          enemiesC.remove(i);
-          break;
-        }
-      }
-      for (int i = 0; i <= enemiesD.size() - 1; i ++)
-      {
-        Enemy e = (Enemy) enemiesD.get(i);
-        if (!e.exists)
-        {
-          enemiesD.remove(i);
-          break;
-        }
+        bullets.remove(b);
+        break;
       }
     }
-    else
-      pauseTime = millis() - pauseStart;
+    for (Enemy e : enemies)
+    {
+      if (!e.exists)
+      {
+        enemies.remove(e);
+        break;
+      }
+    }
+  }
+  else
+  {
+    p.show();
+    for (Blocker b : blockers)
+      b.show();
+    for (Enemy e : enemies)
+      e.show();
+    for (Bullet b : bullets)
+      b.show();
   }
 }
 
@@ -290,7 +215,6 @@ void keyPressed()
   if (key == 'p')
   {
     pause = !pause;
-    pauseStart = millis() - pauseTime;
   }
   if (key == 'f')
     autoFireOn = !autoFireOn;
@@ -331,11 +255,11 @@ void keyReleased()
     keys[3] = false;
 }
 
-void bulletBehavior(ArrayList<Enemy> enemyList, Bullet b)
+void bulletBehavior(Bullet b)
 {
-  for (Enemy e : enemyList)
+  for (Enemy e : enemies)
   {
-    if (b.exists && dist(e.loc2.x, e.loc2.y, b.loc2.x, b.loc2.y) <= e.eSize / 2 + (b.bSize / 2))
+    if (dist(e.loc.x, e.loc.y, b.loc.x, b.loc.y) <= e.eSize / 2 + (b.bSize / 2))
     {
       if (!b.piercing)
         b.exists = false;

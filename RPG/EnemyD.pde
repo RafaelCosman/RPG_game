@@ -1,49 +1,53 @@
 class EnemyD extends Enemy
 {
   final static int E_SIZE = 25;
+  final static int SHOOT_TIME_DEADLINE = 125;
   final static int INITIAL_HP = 15;
   final static int INITIAL_XP_VALUE = 6;
   final static boolean PART_OF_QUEST = false;
   final static boolean EXISTS = true;
 
-  EnemyD(PVector loc1, PVector loc2, int moveTime, int moveChange, int shootTime)
+  int moveTimeDeadline;
+
+  EnemyD(PVector loc, int moveTimeDeadline)
   {
-    super(loc1, loc2, E_SIZE, moveTime, moveChange, shootTime, INITIAL_HP, INITIAL_XP_VALUE, PART_OF_QUEST, EXISTS);
+    super(loc, E_SIZE, SHOOT_TIME_DEADLINE, INITIAL_HP, INITIAL_XP_VALUE);
   }
 
   void show()
   {
     fill(0, 0, 255);
     super.show();
-    if (millis() - shootTime - pauseTime >= 1750 && !pause)
+    shootTimer ++;
+    if (shootTimer >= shootTimeDeadline)
     {
-      shotSpread.set(p.loc2.x - loc2.x, p.loc2.y - loc2.y, 0);
-      bullets.add(new Bullet(new PVector(loc2.x, loc2.y), new PVector(shotSpread.x, shotSpread.y), new PVector(loc2.x, loc2.y), new PVector(), 5, millis() - pauseTime, -1, 2, 275, -1, -1, 4.0, false, false, false, false, true, true, true, false));
+      shotSpread.set(p.loc.x - loc.x, p.loc.y - loc.y, 0);
+      bullets.add(new BulletStraight(new PVector(loc.x, loc.y), new PVector(shotSpread.x, shotSpread.y), 5, 4, 300, 3.75, false, false));
       float m = shotSpread.mag();
       float a = shotSpread.heading2D();
       a += .5;
       shotSpread.x = m * cos(a);
       shotSpread.y = m * sin(a);
-      bullets.add(new Bullet(new PVector(loc2.x, loc2.y), new PVector(shotSpread.x, shotSpread.y), new PVector(loc2.x, loc2.y), new PVector(), 5, millis() - pauseTime, -1, 2, 275, -1, -1, 4.0, false, false, false, false, true, true, true, false));
+      bullets.add(new BulletStraight(new PVector(loc.x, loc.y), new PVector(shotSpread.x, shotSpread.y), 5, 4, 300, 3.75, false, false));
       m = shotSpread.mag();
       a = shotSpread.heading2D();
       a += .5;
       shotSpread.x = m * cos(a);
       shotSpread.y = m * sin(a);
-      bullets.add(new Bullet(new PVector(loc2.x, loc2.y), new PVector(shotSpread.x, shotSpread.y), new PVector(loc2.x, loc2.y), new PVector(), 5, millis() - pauseTime, -1, 2, 275, -1, -1, 4.0, false, false, false, false, true, true, true, false));
+      bullets.add(new BulletStraight(new PVector(loc.x, loc.y), new PVector(shotSpread.x, shotSpread.y), 5, 4, 300, 3.75, false, false));      
       m = shotSpread.mag();
       a = shotSpread.heading2D();
       a -= 1.5;
       shotSpread.x = m * cos(a);
       shotSpread.y = m * sin(a);
-      bullets.add(new Bullet(new PVector(loc2.x, loc2.y), new PVector(shotSpread.x, shotSpread.y), new PVector(loc2.x, loc2.y), new PVector(), 5, millis() - pauseTime, -1, 2, 275, -1, -1, 4.0, false, false, false, false, true, true, true, false));
+      bullets.add(new BulletStraight(new PVector(loc.x, loc.y), new PVector(shotSpread.x, shotSpread.y), 5, 4, 300, 3.75, false, false));      
       m = shotSpread.mag();
       a = shotSpread.heading2D();
       a -= .5;
       shotSpread.x = m * cos(a);
       shotSpread.y = m * sin(a);
-      bullets.add(new Bullet(new PVector(loc2.x, loc2.y), new PVector(shotSpread.x, shotSpread.y), new PVector(loc2.x, loc2.y), new PVector(), 5, millis() - pauseTime, -1, 2, 275, -1, -1, 4.0, false, false, false, false, true, true, true, false));
-      shootTime = millis() - pauseTime;
+      bullets.add(new BulletStraight(new PVector(loc.x, loc.y), new PVector(shotSpread.x, shotSpread.y), 5, 4, 300, 3.75, false, false));      
+      shootTimer = 0;
     }
   }
 }

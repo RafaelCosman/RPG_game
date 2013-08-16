@@ -1,58 +1,55 @@
 class Player
 {
-  PVector loc1;
-  PVector loc2;
-  int pSize, shootTime, hp, maxHP, xp, level;
+  PVector vel;
+  PVector loc;
+  int pSize, shootTimer, hp, maxHP, xp, level;
 
-  Player(PVector loc1, PVector loc2, int pSize, int shootTime, int hp, int maxHP, int xp, int level)
+  Player(PVector loc)
   {
-    this.loc1 = loc1;
-    this.loc2 = loc2;
-    this.pSize = pSize;
-    this.shootTime = shootTime;
-    this.hp = hp;
-    this.maxHP = maxHP;
-    this.xp = xp;
-    this.level = level;
+    this.vel = new PVector();
+    this.loc = loc;
+    this.pSize = 15;
+    this.shootTimer = 0;
+    this.hp = 10;
+    this.maxHP = 10;
+    this.xp = 0;
+    this.level = 1;
   }
 
   void show()
   {
-    loc1.limit(4);
-    if (keys[0] && loc2.x >= 0)
-    {
-      loc1.x -= 100;
-      loc1.limit(4);
-      loc2.add(loc1.x, loc1.y, 0);
-    }
-    if (keys[1] && loc2.x <= mapWidth)
-    {
-      loc1.x += 100;
-      loc1.limit(4);
-      loc2.add(loc1.x, loc1.y, 0);
-    }
-    if (keys[2] && loc2.y >= 0)
-    {
-      loc1.y -= 100;
-      loc1.limit(4);
-      loc2.add(loc1.x, loc1.y, 0);
-    }
-    if (keys[3] && loc2.y <= mapHeight)
-    {
-      loc1.y += 100;
-      loc1.limit(4);
-      loc2.add(loc1.x, loc1.y, 0);
-    }
-    if (loc2.x > mapWidth - (pSize / 2))
-      loc2.x = mapWidth - (pSize / 2);
-    else if (loc2.x < (pSize / 2))
-      loc2.x = (pSize / 2);
-    if (loc2.y > mapHeight - (pSize / 2))
-      loc2.y = mapHeight - (pSize / 2);
-    else if (loc2.y < (pSize / 2))
-      loc2.y = (pSize / 2);
     fill(0, 255, 0);
-    ellipse(loc2.x, loc2.y, pSize, pSize);
+    ellipse(loc.x, loc.y, pSize, pSize);
+  }
+
+  void run()
+  {
+    if (keys[0])
+      vel.x -= 100;
+    if (keys[1])
+      vel.x += 100;
+    if (keys[2])
+      vel.y -= 100;
+    if (keys[3])
+      vel.y += 100;
+    vel.limit(4);
+    int testsPassed = 0;
+    for (Blocker b : blockers)
+    {
+      if (dist(b.loc.x, b.loc.y, loc.x + vel.x, loc.y + vel.y) > b.bSize / 2 + (pSize / 2))
+        testsPassed ++;
+    }
+    if (testsPassed == blockers.size())
+      loc.add(vel.x, vel.y, 0);
+    vel = new PVector();
+    if (loc.x > mapWidth - (pSize / 2))
+      loc.x = mapWidth - (pSize / 2);
+    else if (loc.x < (pSize / 2))
+      loc.x = (pSize / 2);
+    if (loc.y > mapHeight - (pSize / 2))
+      loc.y = mapHeight - (pSize / 2);
+    else if (loc.y < (pSize / 2))
+      loc.y = (pSize / 2);
     for (int i = level; i <= level + 1; i ++)
     {
       if (xp >= i)
@@ -62,5 +59,20 @@ class Player
         maxHP ++;
       }
     }
+    shootTimer ++;
+    if ((mousePressed || autoFireOn))
+    {
+      if (weapon == 1 && shootTimer >= 250)
+      {
+        bullets.add(new BulletStraight(new PVector(loc.x, loc.y), new PVector(shotSpread.x, shotSpread.y), 5, 4, 300, 3.75, false, false));        
+        shootTimer = 0;
+      }
+      if (weapon == 2 && shootTimer >= 150)
+      {
+        bullets.add(new BulletStraight(new PVector(loc.x, loc.y), new PVector(shotSpread.x, shotSpread.y), 5, 4, 300, 3.75, false, false));        
+        shootTimer = 0;
+      }
+    }
   }
 }
+
